@@ -1,1 +1,29 @@
 version: "3.8"
+
+networks:
+  netPRO390:
+    external: false
+
+services:
+  EurekaServer:
+    container_name: EurekaServer
+    image: steeltoeoss/eureka-server:latest
+    restart: always
+    hostname: EurekaServer
+    ports:
+      - 8761:8761
+    networks:
+      - netPRO390
+
+  ua-sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ua-sql-server
+    hostname: ua-sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=T@st1234
+    ports:
+      - "1433:1433"
+    restart: always
+
+

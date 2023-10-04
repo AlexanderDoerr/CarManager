@@ -1,9 +1,15 @@
 package UserAuth.UserAuth;
 
+import org.springframework.data.annotation.Id;
+import java.util.UUID;
 import java.util.Date;
 
+
+
 public class User {
-    int UserId;
+
+    @Id
+    UUID UserId;
     String FirstName;
     String LastName;
     Date DateOfBirth;
@@ -18,7 +24,7 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String firstName, String lastName, Date dateOfBirth, String email, int phoneNumber, String password, String address, String city, State state, int zipCode) {
+    public User(UUID userId, String firstName, String lastName, Date dateOfBirth, String email, int phoneNumber, String password, String address, String city, State state, int zipCode) {
         UserId = userId;
         FirstName = firstName;
         LastName = lastName;
@@ -34,11 +40,11 @@ public class User {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public int getUserId() {
+    public UUID getUserId() {
         return UserId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         UserId = userId;
     }
 
