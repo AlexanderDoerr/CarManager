@@ -11,15 +11,18 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserRestController {
 
-    private final UserRepository userRepository;
     @Autowired
-    public UserRestController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
+
+//    private final UserRepository userRepository;
+//    @Autowired
+//    public UserRestController(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    }
 
     @PostMapping("/register")
     public User registerUser(User user) {
-        user.setUserId(UUID.randomUUID());
+
         return userRepository.save(user);
     }
 

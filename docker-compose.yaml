@@ -15,15 +15,34 @@ services:
     networks:
       - netPRO390
 
-  ua-sql-server:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: ua-sql-server
-    hostname: ua-sql-server
+  # ua-sql-server:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: ua-sql-server
+  #   hostname: ua-sql-server
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=T@st1234
+  #   ports:
+  #     - "1433:1433"
+  #   restart: always
+
+  db:
+    image: mysql:latest
+    container_name: my-mysql-user-container
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=T@st1234
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test1234
     ports:
-      - "1433:1433"
-    restart: always
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./UserAuthSQL:/docker-entrypoint-initdb.d
+      
+
+volumes:
+  db_data:
+
 
 

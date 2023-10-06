@@ -1,20 +1,17 @@
-USE MASTER
-GO
+-- Drop the database if it exists
+DROP DATABASE IF EXISTS userdb;
 
-DROP DATABASE IF EXISTS UserAuthentication
-GO
+-- Create the database
+CREATE DATABASE userdb;
 
-CREATE DATABASE UserAuthentication;
-GO
-
-USE UserAuthentication;
-GO
+-- Use the database
+USE userdb;
 
 -- Create the user table
-CREATE TABLE [User] 
+CREATE TABLE user 
 (
-	UserID INT IDENTITY(1,1) PRIMARY KEY,
-	FirstName VARCHAR(255),
+    UserID CHAR(36) PRIMARY KEY,
+    FirstName VARCHAR(255),
     LastName VARCHAR(255),
     DateOfBirth DATE,
     Email VARCHAR(255),
@@ -24,16 +21,16 @@ CREATE TABLE [User]
     City VARCHAR(255),
     State VARCHAR(2),
     ZipCode INT
-)
-GO
+);
 
 -- Insert a new user record
-INSERT INTO [User]
+INSERT INTO user
 (
-    FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode
+    UserID, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode
 )
 VALUES
 (
+    UUID(),
     'John',
     'Doe',
     '1990-01-01',
@@ -45,4 +42,3 @@ VALUES
     'IL',
     62704
 );
-GO
