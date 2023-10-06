@@ -10,7 +10,7 @@ USE userdb;
 -- Create the user table
 CREATE TABLE user 
 (
-    UserID CHAR(36) PRIMARY KEY,
+    UserId CHAR(36) PRIMARY KEY,
     FirstName VARCHAR(255),
     LastName VARCHAR(255),
     DateOfBirth DATE,
@@ -26,7 +26,7 @@ CREATE TABLE user
 -- Insert a new user record
 INSERT INTO user
 (
-    UserID, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode
+    UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode
 )
 VALUES
 (

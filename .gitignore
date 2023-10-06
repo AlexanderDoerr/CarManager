@@ -1,0 +1,16 @@
+node_modules/
+npm-debug.log
+*.log
+.npm/
+dist/
+build/
+.env
+# Optionally
+package-lock.json
+yarn.lock
+coverage/
+*.swp
+*.swo
+.DS_Store
+*.bak
+*.tmp
