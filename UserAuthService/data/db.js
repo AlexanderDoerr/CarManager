@@ -18,34 +18,21 @@ connection.connect(error => {
   console.log('Connected to the database.');
 });
 
-const createUser = () => {
-  connection.execute(
-    'SELECT * FROM `table` WHERE `name` = ? AND `age` > ?',
-    ['Rick C-137', 53],
+// connection.execute(
+//   'SELECT * FROM user',
+//   function(err, results, fields) {
+//     console.log(results); // results contains rows returned by server
+//     console.log(fields); // fields contains extra meta data about results, if available
+//   }
+// );
 
-    function(err, results, fields) {
-      console.log(results);  // results contains rows returned by server
-      console.log(fields);  // fields contains extra meta data about results, if available
-    }
-  );
-};
-
-// SQL query string
-const query = 'INSERT INTO users (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-
-// Execute query
-connection.execute(
-  query,
-  [userData.UserId, userData.FirstName, userData.LastName, userData.DateOfBirth, userData.Email, userData.PhoneNumber, userData.Password, userData.Address, userData.City, userData.State, userData.ZipCode],
-  (err, results, fields) => {
-    if(err) throw err;
-    console.log('Inserted Row ID:', results.insertId);
-  }
-);
-
-
-
-
+// connection.query(
+//   'SELECT * FROM `user`',
+//   function(err, results, fields) {
+//     console.log(results); // results contains rows returned by server
+//     console.log(fields); // fields contains extra meta data about results, if available
+//   }
+// );
 
 
 

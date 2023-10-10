@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const connection = require('./db.js');
+const connection = require('./data/db.js');
 const sleep = require('sleep-promise');
+const userRoutes = require('./routes/users.js');
 
 const app = express();
 const port = 3000;
@@ -9,6 +10,7 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
+app.use('/users', userRoutes);
 
 // // create the connection to database
 // const connection = mysql.createConnection({

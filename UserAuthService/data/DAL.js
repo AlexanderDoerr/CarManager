@@ -1,59 +1,83 @@
-const db = require('../db');
+const db = require('./db');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
+const { get } = require('../routes/users');
 
-const createUser = async (req, res) => {
+const createUser = async (user) => {
     try {
-        const userData = req.body;
-        const result = await db.execute(
-            'INSERT INTO users (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [ uuidv4(), userData.FirstName, userData.LastName, userData.DateOfBirth, userData.Email, userData.PhoneNumber, userData.Password, userData.Address, userData.City, userData.State, userData.ZipCode]
-        );
-        res.status(201).json(result);  // Use HTTP status code 201 for "Created"
+        if(await getUserByEmail(user.Email)){
+            return "User already exists"
+        } else {
+            let hashedPassword = await encryptPassword(user.Password);
+            await db.promise().execute(
+                'INSERT INTO user (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, user.Address, user.City, user.State, user.ZipCode]
+            );
+            console.log('User created successfully.');
+            // Retrieve the inserted user
+            const result = await getUserByEmail(user.Email);
+            console.log('User retrieved successfully.')
+            console.log(result);
+            return result;
+        }
     } catch (error) {
         console.log(error);
-        res.status(500).json({message: 'An error occurred while creating the user'});
+        throw new Error('An error occurred while creating the user: ' + error.message);
     }
 };
 
 
-const getUser = async (req, res) => {
+const encryptPassword = async (password) => {
     try{
-        const id = req.params.id;
-        const [rows] = await db.execute(
-            'SELECT * FROM users WHERE UserId = ?',
-            [id]
-          );
-          res.status(200).json(rows);
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        return hash;
     } catch(error){
         console.log(error);
-        res.status(500).json({message: 'An error occurred while retrieving the user'});
     }
 };
 
-const getUserByEmail = async (req, res) => {
+
+const getUser = async (id) => {
+    try {
+        const [result] = await db.promise().execute(
+            'SELECT * FROM user WHERE UserId = ?',
+            [id]
+        );
+        return result[0];
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving the user: ' + error.message);
+    }
+};
+
+
+const getUserByEmail = async (email) => {
     try{
-        const email = req.params.email;
-        const [rows] = await db.execute(
-            'SELECT * FROM users WHERE Email = ?',
+        const [rows] = await db.promise().execute(
+            'SELECT * FROM user WHERE Email = ?',
             [email]
           );
-            res.status(200).json(rows);
+            return rows[0];
     } catch(error){
         console.log(error);
-        res.status(500).json({message: 'An error occurred while retrieving the user using the email'});
+        retrun = {
+            "message": "An error occurred while retrieving the user",
+            error: error
+        }
     }
 };
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async () => {
     try{
-        const [rows] = await db.execute(
-            'SELECT * FROM users',
+        const [rows] = await db.promise().execute(
+            'SELECT * FROM user',
             []
         );
-        res.status(200).json(rows);
+        return rows;
     } catch(error){
         console.log(error);
-        res.status(500).json({message: 'An error occurred while retrieving all users'});
+        return error;
     }
 };
 
