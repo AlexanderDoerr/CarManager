@@ -12,6 +12,18 @@ const createUserController = async (req, res) => {
     }
 };
 
+const loginUserController = async (req, res) => {
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        const result = await userData.loginUser(email, password);
+        res.status(200).json(result);
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'An error occurred while logging in the user'});
+    }
+};
+
 const getUserController = async (req, res) => {
     try{
         const id = req.params.id;
@@ -37,5 +49,6 @@ const getAllUsers = async (req, res) => {
 module.exports = {
     createUserController,
     getUserController,
-    getAllUsers
+    getAllUsers,
+    loginUserController
 };

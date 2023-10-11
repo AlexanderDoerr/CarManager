@@ -15,18 +15,20 @@ services:
     networks:
       - netPRO390
 
-  CarManagerAPIGateway:
-    container_name: CarManagerAPIGateway
-    build:
-      context: ./dotnet-apigateway-ocelot
-      dockerfile: Dockerfile
-    image: carmanagerocelotgatewayapi:1
-    restart: always
-    hostname: CarManagerAPIGateway
-    ports:
-      - 5041:80
-    networks:
-      - netPRO390
+  # CarManagerAPIGateway:
+  #   container_name: CarManagerAPIGateway
+  #   build:
+  #     context: ./dotnet-apigateway-ocelot
+  #     dockerfile: Dockerfile
+  #   image: carmanagerocelotgatewayapi:1
+  #   restart: always
+  #   hostname: CarManagerAPIGateway
+  #   ports:
+  #     - 5041:80
+  #   networks:
+  #     - netPRO390
+
+  UserAuthenticationAPI:
 
 
   db:

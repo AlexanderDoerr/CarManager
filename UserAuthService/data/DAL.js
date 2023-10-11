@@ -68,6 +68,27 @@ const getUserByEmail = async (email) => {
     }
 };
 
+const loginUser = async (email, password) => {
+    try{
+        const user = await getUserByEmail(email);
+        if(user){
+            const isMatch = await bcrypt.compare(password, user.Password);
+            if(isMatch){
+                return user;
+            } else {
+                return "Incorrect password";
+            }
+        } else {
+            return "User does not exist";
+        }
+    } catch(error){
+        return {
+            "message": "An error occurred while loging in the user",
+            error: error
+        };
+    }
+};
+
 const getAllUsers = async () => {
     try{
         const [rows] = await db.promise().execute(
@@ -133,5 +154,6 @@ module.exports = {
     getAllUsers,
     updateUserPUT,
     patchUser,
-    deleteUser
+    deleteUser,
+    loginUser
     };
