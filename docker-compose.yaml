@@ -15,18 +15,18 @@ services:
     networks:
       - netPRO390
 
-  # db:
-  #   image: mcr.microsoft.com/mssql/server:2022-latest
-  #   container_name: user-auth-sql-server
-  #   hostname: user-auth-sql-server
-  #   environment:
-  #     - ACCEPT_EULA=Y
-  #     - SA_PASSWORD=T@st1234
-  #   ports:
-  #     - "1433:1433"
-  #   volumes:
-  #     - db_data:/var/opt/mssql
-  #     - ./UserAuthSQL:/docker-entrypoint-initdb.d
+  CarManagerAPIGateway:
+    container_name: CarManagerAPIGateway
+    build:
+      context: ./dotnet-apigateway-ocelot
+      dockerfile: Dockerfile
+    image: carmanagerocelotgatewayapi:1
+    restart: always
+    hostname: CarManagerAPIGateway
+    ports:
+      - 5041:80
+    networks:
+      - netPRO390
 
 
   db:

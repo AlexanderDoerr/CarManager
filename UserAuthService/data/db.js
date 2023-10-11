@@ -10,29 +10,29 @@ const connection = mysql.createConnection({
 });
 
 // Connect to the database
-connection.connect(error => {
-  if (error) {
-    console.error('An error occurred while connecting to the DB: ', error);
-    process.exit();
-  }
-  console.log('Connected to the database.');
-});
-
-// connection.execute(
-//   'SELECT * FROM user',
-//   function(err, results, fields) {
-//     console.log(results); // results contains rows returned by server
-//     console.log(fields); // fields contains extra meta data about results, if available
+// connection.connect(error => {
+//   if (error) {
+//     console.error('An error occurred while connecting to the DB: ', error);
+//     process.exit();
 //   }
-// );
+//   console.log('Connected to the database.');
+// });
 
-// connection.query(
-//   'SELECT * FROM `user`',
-//   function(err, results, fields) {
-//     console.log(results); // results contains rows returned by server
-//     console.log(fields); // fields contains extra meta data about results, if available
-//   }
-// );
+function connectToDatabase() {
+  console.log('Attempting to connect to the database...');
+  connection.connect(error => {
+      if (error) {
+          console.error('An error occurred while connecting to the DB: ', error);
+          console.log('Retrying in 10 seconds...');
+          setTimeout(connectToDatabase, 10000);  // Retry every 30 seconds
+      } else {
+          console.log('Connected to the database.');
+      }
+  });
+}
+
+// Initial attempt to connect
+connectToDatabase();
 
 
 
