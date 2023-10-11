@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Waiting for 30 seconds before registering the service to Eureka...');
-  // await sleep(30000);
+  await sleep(30000);
   console.log('Registering the service to Eureka...');
   eurekaClient.start();
 });

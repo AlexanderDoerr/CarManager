@@ -14,7 +14,7 @@ router.get('/:id', userController.getUserController);
 
 //////////////////////////////////////////////////////////
 
-
+router.patch('/:id', userController.patchUserController);
 
 
 

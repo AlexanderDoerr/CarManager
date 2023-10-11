@@ -2,7 +2,8 @@ const mysql = require('mysql2');
 
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: 'localhost', // or the IP address of your docker host
+  // host: 'localhost', // or the IP address of your docker host
+  host: 'UserAuthenticationDB',
   port: 3306,
   user: 'user',
   password: 'test1234',

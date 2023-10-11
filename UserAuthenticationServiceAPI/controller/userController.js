@@ -46,9 +46,22 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+const patchUserController = async (req, res) => { 
+    try{
+        const userId = req.params.id;
+        const userUpdateData = req.body;
+        const result = await userData.patchUser(userId, userUpdateData);
+        res.status(200).json(result);
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'An error occurred while updating the user'});
+    }
+};
+
 module.exports = {
     createUserController,
     getUserController,
     getAllUsers,
-    loginUserController
+    loginUserController,
+    patchUserController
 };

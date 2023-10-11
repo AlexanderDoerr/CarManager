@@ -4,7 +4,27 @@ networks:
   netPRO390:
     external: false
 
+
+
 services:
+
+  UserAuthenticationDB:
+    image: mysql:latest
+    container_name: UserAuthenticationDB
+    environment:
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test1234
+    ports:
+      - "3306:3306"
+    networks:
+      - netPRO390
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./UserAuthSQL:/docker-entrypoint-initdb.d
+
+
   EurekaServer:
     container_name: EurekaServer
     image: steeltoeoss/eureka-server:latest
@@ -15,38 +35,38 @@ services:
     networks:
       - netPRO390
 
-  # CarManagerAPIGateway:
-  #   container_name: CarManagerAPIGateway
-  #   build:
-  #     context: ./dotnet-apigateway-ocelot
-  #     dockerfile: Dockerfile
-  #   image: carmanagerocelotgatewayapi:1
-  #   restart: always
-  #   hostname: CarManagerAPIGateway
-  #   ports:
-  #     - 5041:80
-  #   networks:
-  #     - netPRO390
-
-  UserAuthenticationAPI:
-
-
-  db:
-    image: mysql:latest
-    container_name: my-mysql-user-container
-    environment:
-      MYSQL_ROOT_PASSWORD: test1234
-      MYSQL_DATABASE: userdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: test1234
+  CarManagerAPIGateway:
+    container_name: CarManagerAPIGateway
+    build:
+      context: ./dotnet-apigateway-ocelot
+      dockerfile: Dockerfile
+    image: carmanagerocelotgatewayapi:1
+    restart: always
+    hostname: CarManagerAPIGateway
     ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./UserAuthSQL:/docker-entrypoint-initdb.d
-      
+      - 5041:80
+    networks:
+      - netPRO390
+
+  UserAuthenticationServiceAPI:
+    build:
+      context: ./userauthenticationserviceapi
+      dockerfile: Dockerfile
+    image: userauthenticationserviceapi:1
+    restart: always
+    hostname: UserAuthenticationServiceAPI
+    ports:
+      - 3000:3000
+    networks:
+      - netPRO390
+    depends_on:
+      - EurekaServer
+      - UserAuthenticationDB
+      - CarManagerAPIGateway
+
 volumes:
   db_data:
+
 
 
 

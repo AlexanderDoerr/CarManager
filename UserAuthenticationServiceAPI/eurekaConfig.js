@@ -26,8 +26,8 @@ const eurekaClient = new Eureka({
     },
   },
   eureka: {
-    host: 'localhost',
-    // host: 'EurekaServer', uncomment this line when you are ready to run the containers
+    // host: 'localhost',
+    host: 'EurekaServer', // Update the host to use the Docker container name
     port: 8761,
     servicePath: '/eureka/apps/',
   },

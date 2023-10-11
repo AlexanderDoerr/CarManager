@@ -102,34 +102,21 @@ const getAllUsers = async () => {
     }
 };
 
-const updateUserPUT = async (req, res) => {
+const patchUser = async (userId, userUpdates) => {
     try {
-        const userId = req.params.id;
-        const userData = req.body;
-        const result = await db.execute(
-            'UPDATE users SET FirstName = ?, LastName = ?, DateOfBirth = ?, Email = ?, PhoneNumber = ?, Password = ?, Address = ?, City = ?, State = ?, ZipCode = ? WHERE UserId = ?',
-            [userData.FirstName, userData.LastName, userData.DateOfBirth, userData.Email, userData.PhoneNumber, userData.Password, userData.Address, userData.City, userData.State, userData.ZipCode, userId]
-        );
-        res.status(200).json(result);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: 'An error occurred while updating the user'});
-    }
-};
-
-const patchUser = async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const updates = Object.keys(req.body).map(
+        const updates = Object.keys(userUpdates).map(
             key => `${key} = ?`
         ).join(', ');
-        const values = Object.values(req.body).concat(userId);
-        const query = `UPDATE users SET ${updates} WHERE UserId = ?`;
-        const result = await db.execute(query, values);
-        res.status(200).json(result);
+        const values = Object.values(userUpdates).concat(userId);
+        const query = `UPDATE user SET ${updates} WHERE UserId = ?`;
+        const result = await db.promise().execute(query, values);
+        return result;
     } catch (error) {
         console.log(error);
-        res.status(500).json({message: 'An error occurred while updating the user'});
+        return {
+            "message": "An error occurred while updating the user",
+            error: error
+        }
     }
 };
 
@@ -152,7 +139,6 @@ module.exports = {
     getUser,
     getUserByEmail,
     getAllUsers,
-    updateUserPUT,
     patchUser,
     deleteUser,
     loginUser
