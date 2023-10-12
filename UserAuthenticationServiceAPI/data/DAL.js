@@ -5,21 +5,18 @@ const { get } = require('../routes/users');
 
 const createUser = async (user) => {
     try {
-        if(await getUserByEmail(user.Email)){
-            return "User already exists"
-        } else {
-            let hashedPassword = await encryptPassword(user.Password);
-            await db.promise().execute(
-                'INSERT INTO user (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, user.Address, user.City, user.State, user.ZipCode]
-            );
-            console.log('User created successfully.');
-            // Retrieve the inserted user
-            const result = await getUserByEmail(user.Email);
-            console.log('User retrieved successfully.')
-            console.log(result);
-            return result;
-        }
+        let hashedPassword = await encryptPassword(user.Password);
+        await db.promise().execute(
+            'INSERT INTO user (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, user.Address, user.City, user.State, user.ZipCode]
+        );
+        console.log('User created successfully.');
+        // Retrieve the inserted user
+        const result = await getUserByEmail(user.Email);
+        console.log('User retrieved successfully.')
+        console.log(result);
+        return result;
+
     } catch (error) {
         console.log(error);
         throw new Error('An error occurred while creating the user: ' + error.message);
@@ -67,6 +64,23 @@ const getUserByEmail = async (email) => {
         }
     }
 };
+
+const getUserByPhoneNumber = async (phoneNumber) => {
+    try{
+        const [rows] = await db.promise().execute(
+            'SELECT * FROM user WHERE PhoneNumber = ?',
+            [phoneNumber]
+            );
+            return rows[0];
+    } catch(error){
+        console.log(error);
+        return {
+            "message": "An error occurred while retrieving the user",
+            error: error
+        }
+    }
+};
+
 
 const loginUser = async (email, password) => {
     try{
@@ -141,5 +155,6 @@ module.exports = {
     getAllUsers,
     patchUser,
     deleteUser,
-    loginUser
+    loginUser,
+    getUserByPhoneNumber
     };
