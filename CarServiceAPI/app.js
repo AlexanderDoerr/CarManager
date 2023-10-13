@@ -2,14 +2,17 @@ require('dotenv').config();
 const express = require('express');
 const sleep = require('sleep-promise');
 const eurekaClient = require('./eurekaConfig.js');
-const userRoutes = require('./routes/users.js');
+const mongoose = require('mongoose');
+const connectDB = require('./data/db.js');
+const carRoutes = require('./routes/cars.js');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const EUREKA_DELAY = process.env.EUREKA_DELAY || 30000;
 
+// Middleware
 app.use(express.json());
-app.use('/users', userRoutes);
+// app.use('/api/v1/cars', carRoutes);
 
 // Health Check Route
 app.get('/health', (req, res) => {
@@ -18,10 +21,12 @@ app.get('/health', (req, res) => {
 
 // Handle Unhandled Routes
 app.use((req, res) => {
-  res.status(404).json({ message: "User Route not found" });
+  res.status(404).json({ message: "Route not found" });
 });
 
-// start server
+// Connect to MongoDB
+connectDB();
+
 app.listen(PORT, async () => {
   try {
     console.log(`Server running on port ${PORT}`);
@@ -38,5 +43,9 @@ app.listen(PORT, async () => {
 process.on('SIGINT', () => {
   console.log('Gracefully shutting down...');
   eurekaClient.stop();
+  mongoose.connection.close(() => {
+    console.log('Mongoose connection disconnected');
+    process.exit(0);
+  });
 });
 

@@ -1,4 +1,4 @@
-const userData = require('../data/DAL.js');
+const userData = require('../data/userModel.js');
 const auth = require('../middleware/auth.js');
 
 
@@ -26,10 +26,6 @@ const createUserController = async (req, res) => {
         }
     }
 };
-
-
-
-
 
 const loginUserController = async (req, res) => {
     try{

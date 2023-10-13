@@ -8,6 +8,9 @@ networks:
 
 services:
 
+#Databases
+#####################################################################################################
+
   UserAuthenticationDB:
     image: mysql:latest
     container_name: UserAuthenticationDB
@@ -24,6 +27,20 @@ services:
       - db_data:/var/lib/mysql
       - ./UserAuthSQL:/docker-entrypoint-initdb.d
 
+  CarServiceDB:
+    container_name: CarServiceDB
+    image: mongo:latest
+    restart: always
+    hostname: CarServiceDB
+    ports:
+      - "27017:27017"
+    networks:
+      - netPRO390
+    volumes:
+      - mongo_data:/data/db
+
+#Service Registery and API Gateway
+#####################################################################################################
 
   EurekaServer:
     container_name: EurekaServer
@@ -48,6 +65,9 @@ services:
     networks:
       - netPRO390
 
+#API Services
+#####################################################################################################
+
   UserAuthenticationServiceAPI:
     build:
       context: ./userauthenticationserviceapi
@@ -64,8 +84,11 @@ services:
       - UserAuthenticationDB
       - CarManagerAPIGateway
 
+#####################################################################################################
+
 volumes:
   db_data:
+  mongo_data:
 
 
 
