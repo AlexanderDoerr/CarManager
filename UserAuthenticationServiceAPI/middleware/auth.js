@@ -2,12 +2,11 @@
 const jwt = require('jsonwebtoken');
 
 // Utilize environment variables for sensitive data
-const secret = process.env.JWT_SECRET || 'fallbacksecret'; // Fallback should be avoided in production
+const secret = process.env.JWT_SECRET || 'fallbacksecret';// Fallback should be avoided in production
 
 const generateToken = (user) => {
   const payload = {
-    id: user.id,
-    username: user.username,
+    id: user.UserId,
   };
   // Token generation with expiration
   return jwt.sign(payload, secret, { expiresIn: '1h' });

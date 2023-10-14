@@ -9,6 +9,11 @@ using Ocelot.Values;
 using Ocelot.Provider.Eureka;
 using Ocelot.Provider.Polly;
 using Steeltoe.Discovery.Client;
+using dotnet_apigateway_ocelot.middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;  // Added for JWT Bearer
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;  // Added for JWT Bearer
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,25 +21,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // you can use this style...
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("ocelot.json").Build();
-//IConfiguration configuration = new ConfigurationBuilder().AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", true, true).Build();
 builder.Services.AddOcelot(configuration)
 .AddEureka()
 .AddPolly();
 
 
-
-/* builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+// Adding JWT Bearer authentication
+builder.Services.AddAuthentication(options => // Added for JWT Bearer
 {
-    config.SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UserAuthSecret")),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+    };
 });
- */
-
-
-// or this style
-//builder.Configuration.AddJsonFile("ocelot.json");
-//builder.Services.AddOcelot().AddEureka().AddPolly();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -57,6 +65,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseAuthentication();  // Added for JWT Bearer
+app.UseAuthorization();  // Added for JWT Bearer
+
+app.UseMiddleware<AddUserIdToHeaderMiddleware>(); // Added for JWT Bearer
 
 
 // ocelot

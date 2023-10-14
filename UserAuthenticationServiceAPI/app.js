@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 const EUREKA_DELAY = process.env.EUREKA_DELAY || 30000;
 
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use(userRoutes);
 
 // Health Check Route
 app.get('/health', (req, res) => {

@@ -10,12 +10,12 @@ const createUserController = async (req, res) => {
         } else if(await userData.getUserByPhoneNumber(user.PhoneNumber)){
             throw new Error("Phone number already exists");
         } else {
-        // const createdUser = await userData.createUser(user);
-        // const token = auth.generateToken(createdUser);
-        // res.status(201).json(token);  // Use HTTP status code 201 for "Created"
+        const createdUser = await userData.createUser(user);
+        const token = auth.generateToken(createdUser);
 
-        const result = await userData.createUser(user);
-        res.status(201).json(result);  // Use HTTP status code 201 for "Created"
+        res.cookie('token', token, {httpOnly: true});
+        res.status(200).json({message: 'User Created'});
+
         }
     } catch (error) {
         console.log(error);
@@ -27,12 +27,26 @@ const createUserController = async (req, res) => {
     }
 };
 
+// const loginUserController = async (req, res) => {
+//     try{
+//         const email = req.body.email;
+//         const password = req.body.password;
+//         const result = await userData.loginUser(email, password);
+//         res.status(200).json(result);
+//     } catch(error){
+//         console.log(error);
+//         res.status(500).json({message: 'An error occurred while logging in the user'});
+//     }
+// };
+
 const loginUserController = async (req, res) => {
     try{
         const email = req.body.email;
         const password = req.body.password;
-        const result = await userData.loginUser(email, password);
-        res.status(200).json(result);
+        const loggedInUser = await userData.loginUser(email, password);
+        const token = auth.generateToken(loggedInUser);
+        res.cookie('token', token, {httpOnly: true});
+        res.status(200).json({message: 'Login successful'});
     } catch(error){
         console.log(error);
         res.status(500).json({message: 'An error occurred while logging in the user'});
