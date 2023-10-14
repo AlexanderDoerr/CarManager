@@ -26,23 +26,23 @@ builder.Services.AddOcelot(configuration)
 .AddPolly();
 
 
-// Adding JWT Bearer authentication
-builder.Services.AddAuthentication(options => // Added for JWT Bearer
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UserAuthSecret")),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-    };
-});
+// // Adding JWT Bearer authentication
+// builder.Services.AddAuthentication(options => // Added for JWT Bearer
+// {
+//     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+// })
+// .AddJwtBearer(options =>
+// {
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuerSigningKey = true,
+//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UserAuthSecret")),
+//         ValidateIssuer = false,
+//         ValidateAudience = false,
+//         ValidateLifetime = true,
+//     };
+// });
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -66,10 +66,10 @@ app.UseHttpsRedirection();
 
 app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseAuthentication();  // Added for JWT Bearer
-app.UseAuthorization();  // Added for JWT Bearer
+// app.UseAuthentication();  // Added for JWT Bearer
+// app.UseAuthorization();  // Added for JWT Bearer
 
-app.UseMiddleware<AddUserIdToHeaderMiddleware>(); // Added for JWT Bearer
+// app.UseMiddleware<AddUserIdToHeaderMiddleware>(); // Added for JWT Bearer
 
 
 // ocelot

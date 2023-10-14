@@ -10,19 +10,11 @@ router.post('/login', userController.loginUserController);
 
 //////////////////////////////////////////////////////////
 
-router.get('/', userController.getAllUsers);
-router.get('/:id',  userController.getUserController);
+router.get('/', authenticateUser, userController.getAllUsers);
+router.get('/:id', authenticateUser,  userController.getUserController);
 
 //////////////////////////////////////////////////////////
 
-router.patch('/:id', userController.patchUserController);
-
-
-// router.get('/', authenticateUser, userController.getAllUsers);
-// router.get('/:id', authenticateUser,  userController.getUserController);
-
-// //////////////////////////////////////////////////////////
-
-// router.patch('/:id', authenticateUser, userController.patchUserController);
+router.patch('/:id', authenticateUser, userController.patchUserController);
 
 module.exports = router;

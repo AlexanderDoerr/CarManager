@@ -12,7 +12,7 @@ const EUREKA_DELAY = process.env.EUREKA_DELAY || 30000;
 
 // Middleware
 app.use(express.json());
-// app.use('/api/v1/cars', carRoutes);
+app.use(carRoutes);
 
 // Health Check Route
 app.get('/health', (req, res) => {

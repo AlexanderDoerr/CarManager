@@ -13,15 +13,15 @@ namespace dotnet_apigateway_ocelot.middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
-        {
-            if (context.User.Identity.IsAuthenticated)
-            {
-                var userId = context.User.Claims.First(c => c.Type == "UserId").Value;
-                context.Request.Headers.Add("UserId", userId);
-            }
+        // public async Task Invoke(HttpContext context)
+        // {
+        //     if (context.User.Identity.IsAuthenticated)
+        //     {
+        //         var userId = context.User.Claims.First(c => c.Type == "UserId").Value;
+        //         context.Request.Headers.Add("UserId", userId);
+        //     }
 
-            await _next(context);
-        }
+        //     await _next(context);
+        // }
     }
 }

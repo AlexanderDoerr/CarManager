@@ -2,41 +2,15 @@
   "Routes": [
     {
       "ServiceName": "UserAuthenticationServiceAPI",
-      "DownstreamPathTemplate": "/login",
-      "UpstreamPathTemplate": "/userapi/login",
-      "UpstreamHttpMethod": ["POST"],
-      "FileCacheOptions": {
-        "TtlSeconds": 15
-      },
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection",
-        "Key": null,
-        "Expiry": 0
-      }
-    },
-    {
-      "ServiceName": "UserAuthenticationServiceAPI",
-      "DownstreamPathTemplate": "/{everything}",
-      "UpstreamPathTemplate": "/userapi/register",
-      "UpstreamHttpMethod": ["POST"],
-      "FileCacheOptions": {
-        "TtlSeconds": 15
-      },
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection",
-        "Key": null,
-        "Expiry": 0
-      }
-    },
-    {
-      "ServiceName": "UserAuthenticationServiceAPI",
       "DownstreamPathTemplate": "/{everything}",
       "UpstreamPathTemplate": "/userapi/{everything}",
-      "UpstreamHttpMethod": ["GET", "PATCH"],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ],
       "FileCacheOptions": {
         "TtlSeconds": 15
       },
