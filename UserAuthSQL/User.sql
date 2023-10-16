@@ -15,7 +15,7 @@ CREATE TABLE user
     LastName VARCHAR(255),
     DateOfBirth DATE,
     Email VARCHAR(255),
-    PhoneNumber INT,
+    PhoneNumber VARCHAR(20),
     Password VARCHAR(255),
     Address VARCHAR(255),
     City VARCHAR(255),

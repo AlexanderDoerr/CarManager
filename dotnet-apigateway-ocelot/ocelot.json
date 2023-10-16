@@ -19,6 +19,26 @@
         "Key": null,
         "Expiry": 0
       }
+    },
+    {
+      "ServiceName": "CarServiceAPI",
+      "DownstreamPathTemplate": "/{everything}",
+      "UpstreamPathTemplate": "/carapi/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ],
+      "FileCacheOptions": {
+        "TtlSeconds": 15
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection",
+        "Key": null,
+        "Expiry": 0
+      }
     }
   ],
   "GlobalConfiguration": {
