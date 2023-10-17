@@ -50,20 +50,22 @@ const getUser = async (id) => {
 
 
 const getUserByEmail = async (email) => {
-    try{
+    try {
         const [rows] = await db.promise().execute(
             'SELECT * FROM user WHERE Email = ?',
             [email]
-          );
+        );
+        if (rows.length > 0) {
             return rows[0];
-    } catch(error){
-        console.log(error);
-        retrun = {
-            "message": "An error occurred while retrieving the user",
-            error: error
+        } else {
+            return null;
         }
+    } catch (error) {
+        console.log(error);
+        throw new Error("An error occurred while retrieving the user");
     }
 };
+
 
 const getUserByPhoneNumber = async (phoneNumber) => {
     try{
@@ -81,27 +83,40 @@ const getUserByPhoneNumber = async (phoneNumber) => {
     }
 };
 
-
 const loginUser = async (email, password) => {
-    try{
-        const user = await getUserByEmail(email);
-        if(user){
-            const isMatch = await bcrypt.compare(password, user.Password);
-            if(isMatch){
-                return user;
-            } else {
-                return "Incorrect password";
-            }
-        } else {
-            return "User does not exist";
-        }
-    } catch(error){
-        return {
-            "message": "An error occurred while loging in the user",
-            error: error
-        };
+    const user = await getUserByEmail(email);
+    if(!user){
+        throw new Error("User does not exist");
     }
+    const isMatch = await bcrypt.compare(password, user.Password);
+    if(!isMatch){
+        throw new Error("Incorrect password");
+    }
+    return user;
 };
+
+
+
+// const loginUser = async (email, password) => {
+//     try{
+//         const user = await getUserByEmail(email);
+//         if(user){
+//             const isMatch = await bcrypt.compare(password, user.Password);
+//             if(isMatch){
+//                 return user;
+//             } else {
+//                 return "Incorrect password";
+//             }
+//         } else {
+//             return "User does not exist";
+//         }
+//     } catch(error){
+//         return {
+//             "message": "An error occurred while loging in the user",
+//             error: error
+//         };
+//     }
+// };
 
 const getAllUsers = async () => {
     try{

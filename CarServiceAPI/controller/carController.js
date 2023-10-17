@@ -89,7 +89,7 @@ const getUserCar = async (req, res) => {
         if (car) {
             res.status(200).json(car);
         } else {
-            res.status(404).json({message: 'Car not found'});
+            res.status(404).json({message: 'getUserCar not found'});
         }
 
     } catch (error) {
@@ -108,7 +108,7 @@ const getAllUserCars = async (req, res) => {
 
         // Check if the user exists
         if (!userCarsDocument) {
-            return res.status(404).json({message: 'User not found'});
+            return res.status(404).json({message: 'getAllUserCars not found'});
         }
 
         // Return the cars array
@@ -137,7 +137,7 @@ const updateCar = async (req, res) => {
         // Find the car to be updated
         const carIndex = userCarsDocument.cars.findIndex(car => car.CarId === carId);
         if (carIndex === -1) {
-            return res.status(404).json({ message: 'Car not found' });
+            return res.status(404).json({ message: 'Update Car not found' });
         }
 
         // If License Plate is being updated, check for conflicts

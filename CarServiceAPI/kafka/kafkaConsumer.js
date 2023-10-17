@@ -1,5 +1,6 @@
 // src/kafka/kafkaConsumer.js
 const { Kafka } = require('kafkajs');
+const sleep = require('sleep-promise');
 
 const kafka = new Kafka({
   clientId: 'car-service',
@@ -10,6 +11,8 @@ brokers: ['kafka:29092']
 const consumer = kafka.consumer({ groupId: 'car-service-group' });
 
 const consumeUserCreatedEvent = async (callback) => {
+    console.log('Waiting 10 seconds to connect to Kafka broker...')
+    await sleep(10000);
     await consumer.connect();
     await consumer.subscribe({ topic: 'user-created'});
     

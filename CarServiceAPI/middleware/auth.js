@@ -15,7 +15,11 @@ const verifyToken = (token) => {
   const authenticateUser = (req, res, next) => {
       try {
           // Extract token
-          const token = req.headers.authorization.split(' ')[1]; 
+          if (!req.headers.authorization) {
+            return res.status(401).json({ message: 'Authorization header missing' });
+        }
+        const token = req.headers.authorization.split(' ')[1];
+        
           const payload = verifyToken(token);
           
           if (payload) {

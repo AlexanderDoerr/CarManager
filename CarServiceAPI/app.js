@@ -7,8 +7,8 @@ const connectDB = require('./data/db.js');
 const carRoutes = require('./routes/cars.js');
 
 const app = express();
-const PORT = process.env.PORT || 3002;
-const EUREKA_DELAY = process.env.EUREKA_DELAY || 30000;
+const PORT = process.env.PORT;
+const EUREKA_DELAY = process.env.EUREKA_DELAY;
 
 // Middleware
 app.use(express.json());

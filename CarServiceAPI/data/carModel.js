@@ -55,12 +55,15 @@
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
+
+
 const carDetailsSchema = new mongoose.Schema({
   CarId: {
     type: String,
     default: uuidv4,
     required: true,
-    unique: true
+    unique: true,
+    sparse: true
 },
   Make: String,
   Model: String,
@@ -85,12 +88,11 @@ const carDetailsSchema = new mongoose.Schema({
     type: [String],
     default: []
   }
-});
+}, { _id: false });
 
 const userCarsSchema = new mongoose.Schema({
   _id: { // Using the user's ID as the primary key for the document
     type: String,
-    required: true,
     unique: true
   },
   cars: [carDetailsSchema] // An array to hold all cars associated with the user

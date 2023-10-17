@@ -53,14 +53,40 @@ const loginUserController = async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
         const loggedInUser = await userData.loginUser(email, password);
+        
+        if (!loggedInUser) {
+            throw new Error("Unexpected error occurred");
+        }
+        
         const token = auth.generateToken(loggedInUser);
         res.cookie('token', token, {httpOnly: true});
         res.status(200).json({message: 'Login successful'});
+        
     } catch(error){
         console.log(error);
-        res.status(500).json({message: 'An error occurred while logging in the user'});
+        
+        if (error.message === "User does not exist" || error.message === "Incorrect password") {
+            res.status(401).json({message: error.message});
+        } else {
+            res.status(500).json({message: 'An error occurred while logging in the user'});
+        }
     }
 };
+
+
+// const loginUserController = async (req, res) => {
+//     try{
+//         const email = req.body.email;
+//         const password = req.body.password;
+//         const loggedInUser = await userData.loginUser(email, password);
+//         const token = auth.generateToken(loggedInUser);
+//         res.cookie('token', token, {httpOnly: true});
+//         res.status(200).json({message: 'Login successful'});
+//     } catch(error){
+//         console.log(error);
+//         res.status(500).json({message: 'An error occurred while logging in the user'});
+//     }
+// };
 
 const getUserController = async (req, res) => {
     try{
