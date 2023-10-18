@@ -1,4 +1,4 @@
-const UserCars  = require('../data/carModel');
+const { UserCars } = require('../data/carModel');
 const jwt = require('jsonwebtoken');
 const { consumeUserCreatedEvent  } = require('../kafka/kafkaConsumer');
 

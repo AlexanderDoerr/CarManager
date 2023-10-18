@@ -52,7 +52,7 @@ services:
     networks:
       - netPRO390
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data_users:/var/lib/mysql
       - ./UserAuthSQL:/docker-entrypoint-initdb.d
 
   CarServiceDB:
@@ -112,26 +112,26 @@ services:
       - UserAuthenticationDB
       - CarManagerAPIGateway
 
-  CarServiceAPI:
-    build:
-      context: ./carserviceapi
-      dockerfile: Dockerfile
-    image: carserviceapi:1
-    restart: always
-    hostname: CarServiceAPI
-    ports:
-      - 3001:3000
-    networks:
-      - netPRO390
-    depends_on:
-      - EurekaServer
-      - CarServiceDB
-      - CarManagerAPIGateway
+  # CarServiceAPI:
+  #   build:
+  #     context: ./carserviceapi
+  #     dockerfile: Dockerfile
+  #   image: carserviceapi:1
+  #   restart: always
+  #   hostname: CarServiceAPI
+  #   ports:
+  #     - 3001:3000
+  #   networks:
+  #     - netPRO390
+  #   depends_on:
+  #     - EurekaServer
+  #     - CarServiceDB
+  #     - CarManagerAPIGateway
 
 #####################################################################################################
 
 volumes:
-  db_data:
+  db_data_users:
   mongo_data:
 
 

@@ -5,14 +5,17 @@ const eurekaClient = require('./eurekaConfig.js');
 const mongoose = require('mongoose');
 const connectDB = require('./data/db.js');
 const carRoutes = require('./routes/cars.js');
+const invoiceRoutes = require('./routes/invoices.js');
 
 const app = express();
-const PORT = process.env.PORT;
+// const PORT = process.env.PORT;
+const PORT = 3001;
 const EUREKA_DELAY = process.env.EUREKA_DELAY;
 
 // Middleware
 app.use(express.json());
-app.use(carRoutes);
+app.use("/car", carRoutes);
+app.use("/invoice", invoiceRoutes);
 
 // Connect to MongoDB
 connectDB();

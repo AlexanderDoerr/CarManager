@@ -6,7 +6,7 @@ const carController = require('../controller/carController');
 
 // Health Check Route, this must come before the authentication routes in order to work. 
 router.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send('CAR OK');
 });
 
 
@@ -23,7 +23,7 @@ router.delete('/:id', authenticateUser, carController.deleteCar);
 
 // Handle Unhandled Routes
 router.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
+  res.status(404).json({ message: "Car Route not found" });
 });
 
 
