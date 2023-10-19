@@ -14,7 +14,7 @@ const consumeUserCreatedEvent = async (callback) => {
     console.log('Waiting 10 seconds to connect to Kafka broker...')
     await sleep(10000);
     await consumer.connect();
-    await consumer.subscribe({ topic: 'user-created'});
+    await consumer.subscribe({ topic: 'user-created', fromBeginning: true});
     
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
