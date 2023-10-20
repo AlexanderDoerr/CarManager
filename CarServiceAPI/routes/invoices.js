@@ -10,6 +10,16 @@ router.get('/health', (req, res) => {
   res.status(200).send('INVOICE OK');
 });
 
+//////////////////////////////////////////////////////////
+
+router.get('/invoices/:invoiceId', authenticateUser, invoiceController.findInvoice);
+
+router.get('/cars/:carId/invoices', authenticateUser, invoiceController.getCarInvoices);
+
+router.get('/date-range/invoices', authenticateUser, invoiceController.getInvoicesByDateRange);
+
+router.get('/service-type/invoices', authenticateUser, invoiceController.getInvoicesByServiceType);
+
 
 //////////////////////////////////////////////////////////
 
