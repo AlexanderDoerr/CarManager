@@ -21,4 +21,8 @@ docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic us
 
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic user-created --from-beginning
 
+List all topics
+docker exec kafka kafka-topics --bootstrap-server kafka:9092 --list
+
+
 
