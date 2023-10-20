@@ -35,6 +35,9 @@ services:
       - netPRO390
     ports:
       - "9092:9092"
+    # volumes:
+    #   - ./Scripts/Kafka/kafka-entrypoint.sh:/kafka-entrypoint.sh
+    # entrypoint: /kafka-entrypoint.sh      
 
 #Databases
 #####################################################################################################
@@ -53,7 +56,7 @@ services:
       - netPRO390
     volumes:
       - db_data_users:/var/lib/mysql
-      - ./UserServiceSQL:/docker-entrypoint-initdb.d
+      - ./Scripts/UserServiceSQL:/docker-entrypoint-initdb.d
 
   CarServiceDB:
     container_name: CarServiceDB
