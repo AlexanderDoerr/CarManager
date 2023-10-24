@@ -8,8 +8,8 @@ const carRoutes = require('./routes/cars.js');
 const invoiceRoutes = require('./routes/invoices.js');
 
 const app = express();
-// const PORT = process.env.PORT;
-const PORT = 3001;
+const PORT = process.env.PORT;
+// const PORT = 3001;
 const EUREKA_DELAY = process.env.EUREKA_DELAY;
 
 // Middleware

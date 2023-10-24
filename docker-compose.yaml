@@ -70,6 +70,22 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  MaintenanceReminderServiceDB:
+    image: mysql:latest
+    container_name: MaintenanceReminderServiceDB
+    environment:
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: maintenancereminderdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test1234
+    ports:
+      - "3307:3306"
+    networks:
+      - netPRO390
+    volumes:
+      - db_data_maintenancereminder:/var/lib/mysql
+      - ./Scripts/MaintenanceReminderServiceSQL:/docker-entrypoint-initdb.d
+
 #Service Registery and API Gateway
 #####################################################################################################
 
@@ -115,27 +131,45 @@ services:
       - UserServiceDB
       - CarManagerAPIGateway
 
-  # CarServiceAPI:
+  CarServiceAPI:
+    build:
+      context: ./carserviceapi
+      dockerfile: Dockerfile
+    image: carserviceapi:1
+    restart: always
+    hostname: CarServiceAPI
+    ports:
+      - 3001:3000
+    networks:
+      - netPRO390
+    depends_on:
+      - EurekaServer
+      - CarServiceDB
+      - CarManagerAPIGateway
+
+  # MaintenanceReminderServiceAPI:
   #   build:
-  #     context: ./carserviceapi
+  #     context: ./maintenancereminderserviceapi
   #     dockerfile: Dockerfile
-  #   image: carserviceapi:1
+  #   image: maintenancereminderserviceapi:1
   #   restart: always
-  #   hostname: CarServiceAPI
+  #   hostname: MaintenanceReminderServiceAPI
   #   ports:
-  #     - 3001:3000
+  #     - 3002:3000
   #   networks:
   #     - netPRO390
   #   depends_on:
   #     - EurekaServer
-  #     - CarServiceDB
   #     - CarManagerAPIGateway
+  #     - CarServiceAPI
+  #     - MaintenanceReminderServiceDB
 
 #####################################################################################################
 
 volumes:
   db_data_users:
   mongo_data:
+  db_data_maintenancereminder:
 
 
 

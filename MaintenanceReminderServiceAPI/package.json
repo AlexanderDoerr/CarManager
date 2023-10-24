@@ -1,0 +1,25 @@
+{
+  "name": "maintenancereminderserviceapi",
+  "version": "1.0.0",
+  "description": "Stores data essential to reminding users of car maintenance. ",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexander Doerr",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "eureka-js-client": "^4.5.0",
+    "express": "^4.18.2",
+    "ip": "^1.1.8",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
+    "mysql2": "^3.6.1",
+    "nodemon": "^3.0.1",
+    "sleep-promise": "^9.1.0",
+    "uuid": "^9.0.1"
+  }
+}
