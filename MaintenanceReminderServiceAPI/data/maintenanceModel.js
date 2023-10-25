@@ -67,10 +67,37 @@ const deleteMaintenance = async (reminderId) => {
 
 /*********************************************************************************************************************/
 
+const createCar = async (car) => {
+    try {
+        await db.promise().execute(
+            'INSERT INTO Cars (carId, userId) VALUES (?, ?)',
+            [car.carId, car.userId]
+        );
+        console.log('Car created successfully.');
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while creating the car: ' + error.message);
+    }
+};
+
+const getCar = async (carId) => {
+    try {
+        const query = 'SELECT * FROM Cars WHERE carId = ?';
+        const [rows] = await db.promise().execute(query, [carId]);
+        console.log('Car retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving the car: ' + error.message);
+    }
+};
+
 module.exports = {
     createMaintenance,
     updateMaintenance,
     getMaintenanceByCarId,
     getDueMaintenanceReminders,
-    deleteMaintenance
+    deleteMaintenance,
+    createCar,
+    getCar
 };

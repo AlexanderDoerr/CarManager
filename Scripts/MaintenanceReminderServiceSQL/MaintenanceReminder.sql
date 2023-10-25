@@ -7,10 +7,11 @@ CREATE DATABASE maintenancereminderdb;
 -- Use the database
 USE maintenancereminderdb;
 
+-- Create the Car table
 CREATE TABLE Car
 (
     carId CHAR(36) PRIMARY KEY,
-    userId CHAR(36),
+    userId CHAR(36)
 );
 
 -- Create the Reminder table
@@ -32,6 +33,18 @@ CREATE TABLE ServiceTypes
     dueTimeMonths INT,
     dueMileage INT
 );
+
+-- Insert data into Car table
+INSERT INTO Car 
+(
+    carId, userId
+)
+VALUES 
+(
+    'car_id_example',
+    'user_id_example'
+);
+
 -- Insert a new maintenance reminder record
 INSERT INTO Reminder 
 (
@@ -47,17 +60,7 @@ VALUES
     'pending'
 );
 
-INSERT INTO Car 
-(
-    carId, userId, otherCarInfo
-)
-VALUES 
-(
-    'car_id_example',
-    'user_id_example',
-    'example info'
-);
-
+-- Insert data into ServiceTypes table
 INSERT INTO ServiceTypes (serviceType, dueTimeMonths, dueMileage)
 VALUES
     ('Oil Change', 6, 5000),
@@ -70,4 +73,3 @@ VALUES
     ('Battery Replacement', 48, 50000),
     ('Timing Belt Replacement', 60, 75000),
     ('Fuel Filter Replacement', 24, 30000);
-

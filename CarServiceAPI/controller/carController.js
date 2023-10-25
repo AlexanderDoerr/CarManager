@@ -1,6 +1,7 @@
 const { UserCars } = require('../data/carModel');
 const jwt = require('jsonwebtoken');
 const { consumeUserCreatedEvent  } = require('../kafka/kafkaConsumer');
+const { publishCarCreatedEvent } = require('../kafka/kafkaProducer');
 
 const VIN_EXISTS_ERROR = 'Car with the provided VIN already exists';
 const LICENSE_EXISTS_ERROR = 'Car with the provided License Plate Number already exists';
@@ -56,6 +57,11 @@ const addCarToUser = async (req, res) => {
         const userCarsDocument = await UserCars.findById(userId);
         userCarsDocument.cars.push(carData);
         await userCarsDocument.save();
+
+        const newCarId = userCarsDocument.cars[userCarsDocument.cars.length - 1].CarId;
+        console.log(`Car created successfully. CarId: ${newCarId}`);
+
+        await publishCarCreatedEvent(userId, newCarId);
 
         res.status(201).json(userCarsDocument);
 

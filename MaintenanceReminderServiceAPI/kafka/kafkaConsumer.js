@@ -8,31 +8,16 @@ const kafka = new Kafka({
 // brokers: ['kafka:29092']
 });
 
-const consumer = kafka.consumer({ groupId: 'maintenance-reminder-service-group' });
-
-// const consumeInvoiceCreatedEvent = async (callback) => {
-//     console.log('Waiting 10 seconds to connect to Kafka broker...')
-//     await sleep(10000);
-//     await consumer.connect();
-//     await consumer.subscribe({ topic: 'invoice-created', fromBeginning: true});
-    
-//     await consumer.run({
-//         eachMessage: async ({ topic, partition, message }) => {
-            
-//             const { userId, carId, serviceType, serviceDate, serviceMileage } = JSON.parse(message.value.toString());
-//             console.log(`Received message for user: ${userId}, car: ${carId}`);
-//             callback(userId, carId, serviceType, serviceDate, serviceMileage);
-//         },
-//     });
-// };
+const carCreatedConsumer = kafka.consumer({ groupId: 'maintenance-reminder-service-group' });
+const invoiceCreatedConsumer = kafka.consumer({ groupId: 'maintenance-reminder-service-group' });
 
 const consumeInvoiceCreatedEvent = async (callback) => {
     console.log('Waiting 10 seconds to connect to Kafka broker...');
     await sleep(10000);
-    await consumer.connect();
-    await consumer.subscribe({ topic: 'invoice-created', fromBeginning: true });
+    await invoiceCreatedConsumer.connect();
+    await invoiceCreatedConsumer.subscribe({ topic: 'invoice-created', fromBeginning: true });
     
-    await consumer.run({
+    await invoiceCreatedConsumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const { userId, carId, serviceType, serviceDate, serviceMileage } = JSON.parse(message.value.toString());
             console.log(`Received message for user: ${userId}, car: ${carId}, serviceType: ${serviceType}, serviceDate: ${serviceDate}, serviceMileage: ${serviceMileage}`);
@@ -72,7 +57,23 @@ const consumeMileageUpdatedEvent = async (callback) => {
     });
 };
 
+const consumeCarCreatedEvent = async (callback) => {
+    console.log('Waiting 10 seconds to connect to Kafka broker...')
+    await sleep(10000);
+    await carCreatedConsumer.connect();
+    await carCreatedConsumer.subscribe({ topic: 'car-created', fromBeginning: true });
+  
+    await carCreatedConsumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        const { userId, carId } = JSON.parse(message.value.toString());
+        console.log(`Received message for car: ${carId}, user: ${userId}`);
+        callback(userId, carId);
+      },
+    });
+  };
+
 module.exports = {
     consumeInvoiceCreatedEvent,
-    consumeMileageUpdatedEvent
+    consumeMileageUpdatedEvent,
+    consumeCarCreatedEvent
 };

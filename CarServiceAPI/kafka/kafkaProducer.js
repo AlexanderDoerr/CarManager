@@ -8,6 +8,21 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
+const publishCarCreatedEvent = async (userId, carId,) => {
+    await producer.connect();
+    await producer.send({
+        topic: 'car-created',
+        messages: [
+            {
+                value: JSON.stringify({
+                    userId,
+                    carId,
+                }),
+            },
+        ],
+    });
+};
+
 const publishInvoiceCreatedEvent = async (userId, carId, serviceType, serviceDate, serviceMileage) => {
     await producer.connect();
     await producer.send({
@@ -37,6 +52,7 @@ const publishMileageUpdatedEvent = async (carId, mileage) => {
 }
 
 module.exports = {
+    publishCarCreatedEvent,
     publishInvoiceCreatedEvent,
     publishMileageUpdatedEvent,
 };
