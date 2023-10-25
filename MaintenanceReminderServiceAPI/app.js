@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const sleep = require('sleep-promise');
 const eurekaClient = require('./eurekaConfig.js');
+const controller = require('./controller/maintenanceController.js');
 
 const app = express();
 // const PORT = process.env.PORT;
@@ -9,6 +10,9 @@ const PORT = 3005;
 const EUREKA_DELAY = process.env.EUREKA_DELAY;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 
 app.listen(PORT, async () => {
     try {

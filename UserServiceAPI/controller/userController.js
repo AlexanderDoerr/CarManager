@@ -2,7 +2,6 @@ const userData = require('../data/userModel.js');
 const auth = require('../middleware/auth.js');
 const { sendUserCreatedEvent  } = require('../kafka/kafkaProducer.js');
 
-
 const EMAIL_EXISTS_ERROR = "Email already exists";
 const PHONE_EXISTS_ERROR = "Phone number already exists";
 const GENERIC_ERROR = "An error occurred while creating the user";

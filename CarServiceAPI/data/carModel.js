@@ -51,7 +51,7 @@ const invoiceSchema = new mongoose.Schema({
     },
     TotalPartsCost: Number,
     TotalCost: Number,
-    ServiceTypeId: {
+    ServiceType: {
         type: String,
         required: true
     },
