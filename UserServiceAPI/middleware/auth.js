@@ -9,7 +9,6 @@ const generateToken = (user) => {
     id: user.UserId,
   };
   // Token generation with expiration
-  console.log("Secret: ", secret);
   return jwt.sign(payload, secret, { expiresIn: '1h' });
 };
 

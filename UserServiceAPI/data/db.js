@@ -1,7 +1,6 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
-// Create a connection to the database
 const connection = mysql.createConnection({
   // host: 'localhost', // or the IP address of your docker host
   host: process.env.DB_HOST,
@@ -11,22 +10,30 @@ const connection = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-function connectToDatabase() {
-  console.log('Attempting to connect to the database...');
+const promiseConnection = connection.promise();
+
+const connectToDatabase = () => {
   connection.connect(error => {
       if (error) {
           console.error('An error occurred while connecting to the DB: ', error);
-          console.log('Retrying in 10 seconds...');
-          setTimeout(connectToDatabase, 10000);  // Retry every 30 seconds
       } else {
           console.log('Connected to the database.');
       }
   });
-}
+};
 
-// Initial attempt to connect
-connectToDatabase();
+const disconnectFromDatabase = () => {
+  connection.end(error => {
+    if (error) {
+      console.error('An error occurred while disconnecting from the DB: ', error);
+    } else {
+      console.log('Disconnected from the database.');
+    }
+  });
+};
 
-
-
-module.exports = connection;
+module.exports = {
+  promiseConnection,
+  connectToDatabase,
+  disconnectFromDatabase
+};

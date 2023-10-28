@@ -32,5 +32,12 @@ docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:
 List all topics
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --list
 
+to get in a container
+docker exec -it <container_id_or_name> /bin/sh
+
+docker exec -it userserviceapi:1 /bin/sh
+
+
+
 
 

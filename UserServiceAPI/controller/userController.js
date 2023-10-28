@@ -6,6 +6,8 @@ const EMAIL_EXISTS_ERROR = "Email already exists";
 const PHONE_EXISTS_ERROR = "Phone number already exists";
 const GENERIC_ERROR = "An error occurred while creating the user";
 
+/****************************************************************************************************/
+
 const validateUser = async (user) => {
     if (await userData.getUserByEmail(user.Email)) {
         throw new Error(EMAIL_EXISTS_ERROR);
@@ -47,6 +49,8 @@ const createUserController = async (req, res) => {
     }
 };
 
+/****************************************************************************************************/
+
 const loginUserController = async (req, res) => {
     try{
         const email = req.body.email;
@@ -73,20 +77,6 @@ const loginUserController = async (req, res) => {
 };
 
 
-// const loginUserController = async (req, res) => {
-//     try{
-//         const email = req.body.email;
-//         const password = req.body.password;
-//         const loggedInUser = await userData.loginUser(email, password);
-//         const token = auth.generateToken(loggedInUser);
-//         res.cookie('token', token, {httpOnly: true});
-//         res.status(200).json({message: 'Login successful'});
-//     } catch(error){
-//         console.log(error);
-//         res.status(500).json({message: 'An error occurred while logging in the user'});
-//     }
-// };
-
 const getUserController = async (req, res) => {
     try{
         const id = req.params.id;
@@ -109,6 +99,8 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+/****************************************************************************************************/
+
 const patchUserController = async (req, res) => { 
     try{
         const userId = req.params.id;
@@ -120,6 +112,8 @@ const patchUserController = async (req, res) => {
         res.status(500).json({message: 'An error occurred while updating the user'});
     }
 };
+
+/****************************************************************************************************/
 
 module.exports = {
     createUserController,

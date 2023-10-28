@@ -1,4 +1,4 @@
-const db = require('./db');
+const {promiseConnection} = require('./db');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const { get } = require('../routes/users');
@@ -6,7 +6,7 @@ const { get } = require('../routes/users');
 const createUser = async (user) => {
     try {
         let hashedPassword = await encryptPassword(user.Password);
-        await db.promise().execute(
+        await promiseConnection.execute(
             'INSERT INTO user (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, user.Address, user.City, user.State, user.ZipCode]
         );
@@ -23,7 +23,6 @@ const createUser = async (user) => {
     }
 };
 
-
 const encryptPassword = async (password) => {
     try{
         const salt = await bcrypt.genSalt(10);
@@ -34,10 +33,11 @@ const encryptPassword = async (password) => {
     }
 };
 
+/****************************************************************************************************/
 
 const getUser = async (id) => {
     try {
-        const [result] = await db.promise().execute(
+        const [result] = await promiseConnection.execute(
             'SELECT * FROM user WHERE UserId = ?',
             [id]
         );
@@ -51,7 +51,7 @@ const getUser = async (id) => {
 
 const getUserByEmail = async (email) => {
     try {
-        const [rows] = await db.promise().execute(
+        const [rows] = await promiseConnection.execute(
             'SELECT * FROM user WHERE Email = ?',
             [email]
         );
@@ -69,7 +69,7 @@ const getUserByEmail = async (email) => {
 
 const getUserByPhoneNumber = async (phoneNumber) => {
     try{
-        const [rows] = await db.promise().execute(
+        const [rows] = await promiseConnection.execute(
             'SELECT * FROM user WHERE PhoneNumber = ?',
             [phoneNumber]
             );
@@ -80,6 +80,19 @@ const getUserByPhoneNumber = async (phoneNumber) => {
             "message": "An error occurred while retrieving the user",
             error: error
         }
+    }
+};
+
+const getAllUsers = async () => {
+    try{
+        const [rows] = await promiseConnection.execute(
+            'SELECT * FROM user',
+            []
+        );
+        return rows;
+    } catch(error){
+        console.log(error);
+        return error;
     }
 };
 
@@ -95,41 +108,7 @@ const loginUser = async (email, password) => {
     return user;
 };
 
-
-
-// const loginUser = async (email, password) => {
-//     try{
-//         const user = await getUserByEmail(email);
-//         if(user){
-//             const isMatch = await bcrypt.compare(password, user.Password);
-//             if(isMatch){
-//                 return user;
-//             } else {
-//                 return "Incorrect password";
-//             }
-//         } else {
-//             return "User does not exist";
-//         }
-//     } catch(error){
-//         return {
-//             "message": "An error occurred while loging in the user",
-//             error: error
-//         };
-//     }
-// };
-
-const getAllUsers = async () => {
-    try{
-        const [rows] = await db.promise().execute(
-            'SELECT * FROM user',
-            []
-        );
-        return rows;
-    } catch(error){
-        console.log(error);
-        return error;
-    }
-};
+/****************************************************************************************************/
 
 const patchUser = async (userId, userUpdates) => {
     try {
@@ -138,7 +117,7 @@ const patchUser = async (userId, userUpdates) => {
         ).join(', ');
         const values = Object.values(userUpdates).concat(userId);
         const query = `UPDATE user SET ${updates} WHERE UserId = ?`;
-        const result = await db.promise().execute(query, values);
+        const result = await promiseConnection.execute(query, values);
         return result;
     } catch (error) {
         console.log(error);
@@ -149,10 +128,12 @@ const patchUser = async (userId, userUpdates) => {
     }
 };
 
+/****************************************************************************************************/
+
 const deleteUser = async (req, res) => {
     try{
         const id = req.params.id;
-        const result = await db.execute(
+        const result = await promiseConnection.execute(
             'DELETE FROM users WHERE UserId = ?',
             [id]
         );
@@ -162,6 +143,8 @@ const deleteUser = async (req, res) => {
         res.status(500).json({message: 'An error occurred while deleting the user'});
     }
 };
+
+/****************************************************************************************************/
 
 module.exports = {
     createUser,
