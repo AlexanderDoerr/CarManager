@@ -1,11 +1,11 @@
-const db = require("./db.js");
+const {promiseConnection} = require("./db.js");
 const { v4: uuidv4 } = require('uuid');
 
 /*********************************************************************************************************************/
 
 const createMaintenance = async (maintenance) => {
     try {
-        await db.promise().execute(
+        await promiseConnection.execute(
             'INSERT INTO Reminder (reminderId, carId, serviceType, dueDate, dueMileage, status) VALUES (?, ?, ?, ?, ?, ?)',
             [uuidv4(), maintenance.carId, maintenance.serviceType, maintenance.dueDate, maintenance.dueMileage, 'pending']
         );
@@ -19,7 +19,7 @@ const createMaintenance = async (maintenance) => {
 const updateMaintenance = async (reminderId, updates) => {
     try {
         const query = 'UPDATE Reminder SET status = ? WHERE reminderId = ?';
-        const result = await db.promise().execute(query, [updates.status, reminderId]);
+        const result = await promiseConnection.execute(query, [updates.status, reminderId]);
         console.log('Maintenance reminder updated successfully.');
         return result;
     } catch (error) {
@@ -31,7 +31,7 @@ const updateMaintenance = async (reminderId, updates) => {
 const getMaintenanceByCarId = async (carId) => {
     try {
         const query = 'SELECT * FROM Reminder WHERE carId = ?';
-        const [rows] = await db.promise().execute(query, [carId]);
+        const [rows] = await promiseConnection.execute(query, [carId]);
         console.log('Maintenance reminders retrieved successfully.');
         return rows;
     } catch (error) {
@@ -43,7 +43,7 @@ const getMaintenanceByCarId = async (carId) => {
 const getDueMaintenanceReminders = async (carId) => {
     try {
         const query = "SELECT * FROM Reminder WHERE carId = ? AND dueDate <= CURDATE() AND status = 'pending'";
-        const [rows] = await db.promise().execute(query, [carId]);
+        const [rows] = await promiseConnection.execute(query, [carId]);
         console.log('Due maintenance reminders retrieved successfully.');
         return rows;
     } catch (error) {
@@ -55,7 +55,7 @@ const getDueMaintenanceReminders = async (carId) => {
 const getDueMileageMaintenanceReminders = async (carId, mileage) => {
     try {
         const query = "SELECT * FROM Reminder WHERE carId = ? AND status = 'pending' AND dueMileage <= ?";
-        const [rows] = await db.promise().execute(query, [carId, mileage]);
+        const [rows] = await promiseConnection.execute(query, [carId, mileage]);
         console.log('Due mileage maintenance reminders retrieved successfully.');
         return rows;
     } catch (error) {
@@ -68,7 +68,7 @@ const getDueMileageMaintenanceReminders = async (carId, mileage) => {
 const deleteMaintenance = async (reminderId) => {
     try {
         const query = 'DELETE FROM Reminder WHERE reminderId = ?';
-        const result = await db.promise().execute(query, [reminderId]);
+        const result = await promiseConnection.execute(query, [reminderId]);
         console.log('Maintenance reminder deleted successfully.');
         return result;
     } catch (error) {
@@ -81,7 +81,7 @@ const deleteMaintenance = async (reminderId) => {
 
 const createCar = async (car) => {
     try {
-        await db.promise().execute(
+        await promiseConnection.execute(
             'INSERT INTO Car (carId, userId) VALUES (?, ?)',
             [car.carId, car.userId]
         );
@@ -95,7 +95,7 @@ const createCar = async (car) => {
 const getCar = async (carId) => {
     try {
         const query = 'SELECT carId FROM Car WHERE carId = ?';
-        const [rows] = await db.promise().execute(query, [carId]);
+        const [rows] = await promiseConnection.execute(query, [carId]);
         
         if (rows.length === 0) {
             console.log(`No car found with ID ${carId}.`);
@@ -110,6 +110,27 @@ const getCar = async (carId) => {
     }
 };
 
+/*********************************************************************************************************************/
+
+const calculateNextServices = async (serviceType, serviceDate, serviceMileage) => {
+
+    const [rows] = await promiseConnection.execute(
+        'SELECT dueTimeMonths, dueMileage FROM ServiceTypes WHERE serviceType = ?',
+        [serviceType]
+    );
+    const { dueTimeMonths, dueMileage } = rows[0];
+
+    // Calculate the next due date and due mileage
+    const nextDueDate = new Date(serviceDate);
+    nextDueDate.setMonth(nextDueDate.getMonth() + dueTimeMonths);
+    const nextDueMileage = serviceMileage + dueMileage;
+
+    return {
+        nextDueDate, // corrected
+        nextDueMileage // corrected
+    };
+};
+
 module.exports = {
     createMaintenance,
     updateMaintenance,
@@ -118,5 +139,6 @@ module.exports = {
     deleteMaintenance,
     createCar,
     getCar,
-    getDueMileageMaintenanceReminders
+    getDueMileageMaintenanceReminders,
+    calculateNextServices
 };

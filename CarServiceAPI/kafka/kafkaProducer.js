@@ -8,8 +8,15 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
-const publishCarCreatedEvent = async (userId, carId,) => {
+const connectProducer = async () => {
     await producer.connect();
+};
+
+const disconnectProducer = async () => {
+    await producer.disconnect();
+};
+
+const publishCarCreatedEvent = async (userId, carId,) => {
     console.log("car created event")
     await producer.send({
         topic: 'car-created',
@@ -17,7 +24,7 @@ const publishCarCreatedEvent = async (userId, carId,) => {
             {
                 value: JSON.stringify({
                     userId,
-                    carId,
+                    carId
                 }),
             },
         ],
@@ -25,7 +32,6 @@ const publishCarCreatedEvent = async (userId, carId,) => {
 };
 
 const publishInvoiceCreatedEvent = async (carId, serviceType, serviceDate, serviceMileage) => {
-    await producer.connect();
     console.log("invoice created event")
     console.log(carId, serviceType, serviceDate, serviceMileage)
     await producer.send({
@@ -36,7 +42,7 @@ const publishInvoiceCreatedEvent = async (carId, serviceType, serviceDate, servi
                     carId,
                     serviceType,
                     serviceDate,
-                    serviceMileage,
+                    serviceMileage
                 }),
             },
         ],
@@ -44,19 +50,26 @@ const publishInvoiceCreatedEvent = async (carId, serviceType, serviceDate, servi
 };
 
 const publishMileageUpdatedEvent = async (carId, mileage, serviceType) => {
-    await producer.connect();
     console.log("mileage updated event")
     console.log(carId, mileage, serviceType)
     await producer.send({
         topic: 'mileage-updated',
         messages: [
-            { value: JSON.stringify({ carId, mileage, serviceType }) }
-        ]
+            { 
+                value: JSON.stringify({
+                    carId,
+                    mileage,
+                    serviceType
+                }),
+            },
+        ],
     });
-}
+};
 
 module.exports = {
     publishCarCreatedEvent,
     publishInvoiceCreatedEvent,
     publishMileageUpdatedEvent,
+    connectProducer,
+    disconnectProducer
 };

@@ -19,22 +19,36 @@ const connection = mysql.createConnection({// run this when not using docker
   database: process.env.DB_NAME
 });
 
-function connectToDatabase() {
-  console.log('Attempting to connect to the database...');
+const promiseConnection = connection.promise();
+
+const connectToDatabase = () => {
   connection.connect(error => {
       if (error) {
           console.error('An error occurred while connecting to the DB: ', error);
-          console.log('Retrying in 10 seconds...');
-          setTimeout(connectToDatabase, 10000);  // Retry every 30 seconds
       } else {
           console.log('Connected to the database.');
       }
   });
-}
+};
+
+const disconnectFromDatabase = () => {
+  connection.end(error => {
+    if (error) {
+      console.error('An error occurred while disconnecting from the DB: ', error);
+    } else {
+      console.log('Disconnected from the database.');
+    }
+  });
+};
 
 // Initial attempt to connect
 connectToDatabase();
 
 
 
-module.exports = connection;
+module.exports = {
+  promiseConnection,
+  connectToDatabase,
+  disconnectFromDatabase
+};
+

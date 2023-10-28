@@ -22,6 +22,8 @@ app.use((req, res) => {
   res.status(404).json({ message: "User Route not found" });
 });
 
+/***********************************************************************************************/
+
 const server = app.listen(PORT, async () => {
   try {
     console.log(`Server running on port ${PORT}`);
@@ -40,10 +42,9 @@ const server = app.listen(PORT, async () => {
   }
 });
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+/***********************************************************************************************/
 
-function gracefulShutdown() {
+const gracefulShutdown = () => {
   console.log('\nStarting graceful shutdown...');
 
   // Prevent new operations
@@ -69,4 +70,9 @@ function gracefulShutdown() {
     process.exit(1);
   }, 5000);
 };
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+
+/***********************************************************************************************/
 

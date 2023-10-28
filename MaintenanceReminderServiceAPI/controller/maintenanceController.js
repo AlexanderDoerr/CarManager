@@ -3,19 +3,23 @@ const {consumeInvoiceCreatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeMileageUpdatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeCarCreatedEvent} = require('../kafka/kafkaConsumer.js');
 
-const createMaintenanceRecord = async (carId, serviceType, dueDate, dueMileage) => {
+const createMaintenanceRecord = async (carId, serviceType, serviceDate, serviceMileage) => {
     const carRows = await maintenanceModel.getCar(carId);
 
     if (carRows.length === 0) {
         console.error(`No car found with ID ${carId}. Cannot create reminder.`);
         return;
-    }
+    };
+
+    const calculateServices = await maintenanceModel.calculateNextServices(serviceType, serviceDate, serviceMileage);
+    let nextDueDate = calculateServices.nextDueDate;
+    let nextDueMileage = calculateServices.nextDueMileage;
 
     const reminder = {
         carId,
         serviceType,
-        dueDate,
-        dueMileage,
+        nextDueDate,
+        nextDueMileage,
         status: 'pending'
     };
     await maintenanceModel.createMaintenance(reminder);

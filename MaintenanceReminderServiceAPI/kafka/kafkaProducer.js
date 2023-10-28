@@ -8,9 +8,17 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
+const connectProducer = async () => {
+    await producer.connect();
+};
+
+const disconnectProducer = async () => {
+    await producer.disconnect();
+};
+
+
 const publishMaintenanceReminderCreatedEvent = async (reminderId, carId, userId, serviceType, dueDate, dueMileage) => {
     try {
-        await producer.connect();
         await producer.send({
             topic: 'maintenance-reminder-created',
             messages: [
@@ -39,4 +47,6 @@ const publishMaintenanceReminderCreatedEvent = async (reminderId, carId, userId,
 
 module.exports = {
     publishMaintenanceReminderCreatedEvent,
+    connectProducer,
+    disconnectProducer
 };
