@@ -6,7 +6,7 @@ const controller = require('./controller/maintenanceController.js');
 
 const app = express();
 // const PORT = process.env.PORT;
-const PORT = 3005;
+const PORT = 3004;
 const EUREKA_DELAY = process.env.EUREKA_DELAY;
 
 app.use(express.json());

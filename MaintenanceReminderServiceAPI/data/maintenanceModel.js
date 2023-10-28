@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const createMaintenance = async (maintenance) => {
     try {
         await db.promise().execute(
-            'INSERT INTO MaintenanceReminders (reminderId, carId, userId, serviceType, dueDate, dueMileage, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [uuidv4(), maintenance.carId, maintenance.userId, maintenance.serviceType, maintenance.dueDate, maintenance.dueMileage, 'pending']
+            'INSERT INTO Reminder (reminderId, carId, serviceType, dueDate, dueMileage, status) VALUES (?, ?, ?, ?, ?, ?)',
+            [uuidv4(), maintenance.carId, maintenance.serviceType, maintenance.dueDate, maintenance.dueMileage, 'pending']
         );
         console.log('Maintenance reminder created successfully.');
     } catch (error) {
@@ -18,8 +18,8 @@ const createMaintenance = async (maintenance) => {
 
 const updateMaintenance = async (reminderId, updates) => {
     try {
-        const query = 'UPDATE MaintenanceReminders SET ? WHERE reminderId = ?';
-        const result = await db.promise().execute(query, [updates, reminderId]);
+        const query = 'UPDATE Reminder SET status = ? WHERE reminderId = ?';
+        const result = await db.promise().execute(query, [updates.status, reminderId]);
         console.log('Maintenance reminder updated successfully.');
         return result;
     } catch (error) {
@@ -30,7 +30,7 @@ const updateMaintenance = async (reminderId, updates) => {
 
 const getMaintenanceByCarId = async (carId) => {
     try {
-        const query = 'SELECT * FROM MaintenanceReminders WHERE carId = ?';
+        const query = 'SELECT * FROM Reminder WHERE carId = ?';
         const [rows] = await db.promise().execute(query, [carId]);
         console.log('Maintenance reminders retrieved successfully.');
         return rows;
@@ -40,10 +40,10 @@ const getMaintenanceByCarId = async (carId) => {
     }
 };
 
-const getDueMaintenanceReminders = async () => {
+const getDueMaintenanceReminders = async (carId) => {
     try {
-        const query = 'SELECT * FROM MaintenanceReminders WHERE dueDate <= CURDATE() AND status = \'pending\'';
-        const [rows] = await db.promise().execute(query);
+        const query = "SELECT * FROM Reminder WHERE carId = ? AND dueDate <= CURDATE() AND status = 'pending'";
+        const [rows] = await db.promise().execute(query, [carId]);
         console.log('Due maintenance reminders retrieved successfully.');
         return rows;
     } catch (error) {
@@ -52,10 +52,22 @@ const getDueMaintenanceReminders = async () => {
     }
 };
 
+const getDueMileageMaintenanceReminders = async (carId, mileage) => {
+    try {
+        const query = "SELECT * FROM Reminder WHERE carId = ? AND status = 'pending' AND dueMileage <= ?";
+        const [rows] = await db.promise().execute(query, [carId, mileage]);
+        console.log('Due mileage maintenance reminders retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving due mileage maintenance reminders: ' + error.message);
+    }
+};
+
 
 const deleteMaintenance = async (reminderId) => {
     try {
-        const query = 'DELETE FROM MaintenanceReminders WHERE reminderId = ?';
+        const query = 'DELETE FROM Reminder WHERE reminderId = ?';
         const result = await db.promise().execute(query, [reminderId]);
         console.log('Maintenance reminder deleted successfully.');
         return result;
@@ -70,7 +82,7 @@ const deleteMaintenance = async (reminderId) => {
 const createCar = async (car) => {
     try {
         await db.promise().execute(
-            'INSERT INTO Cars (carId, userId) VALUES (?, ?)',
+            'INSERT INTO Car (carId, userId) VALUES (?, ?)',
             [car.carId, car.userId]
         );
         console.log('Car created successfully.');
@@ -82,9 +94,15 @@ const createCar = async (car) => {
 
 const getCar = async (carId) => {
     try {
-        const query = 'SELECT * FROM Cars WHERE carId = ?';
+        const query = 'SELECT carId FROM Car WHERE carId = ?';
         const [rows] = await db.promise().execute(query, [carId]);
-        console.log('Car retrieved successfully.');
+        
+        if (rows.length === 0) {
+            console.log(`No car found with ID ${carId}.`);
+        } else {
+            console.log('Car retrieved successfully.');
+        }
+
         return rows;
     } catch (error) {
         console.log(error);
@@ -99,5 +117,6 @@ module.exports = {
     getDueMaintenanceReminders,
     deleteMaintenance,
     createCar,
-    getCar
+    getCar,
+    getDueMileageMaintenanceReminders
 };

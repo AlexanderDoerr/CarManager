@@ -20,10 +20,9 @@ const AddInvoice = async (req, res) => {
         const publishMileageEvent = updateCarMileage(car, invoiceData);
         await saveUserCarsDocument(userCarsDocument);
 
-        publishMileageEventIfNecessary(publishMileageEvent, carId, invoiceData.ServiceMileage);
+        publishMileageEventIfNecessary(publishMileageEvent, carId, invoiceData.ServiceMileage, invoiceData.ServiceType);
 
         await publishInvoiceCreatedEvent(
-            userId,
             carId,
             invoiceData.ServiceType,
             invoiceData.ServiceDate,
@@ -73,9 +72,9 @@ const saveUserCarsDocument = async (userCarsDocument) => {
     await userCarsDocument.save();
 };
 
-const publishMileageEventIfNecessary = (publishMileageEvent, carId, mileage) => {
+const publishMileageEventIfNecessary = (publishMileageEvent, carId, mileage, serviceType) => {
     if (publishMileageEvent) {
-        publishMileageUpdatedEvent(carId, mileage);
+        publishMileageUpdatedEvent(carId, mileage, serviceType);
     }
 };
 
