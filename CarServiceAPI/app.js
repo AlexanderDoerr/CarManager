@@ -10,7 +10,6 @@ const { connectConsumer, disconnectConsumer } = require('./kafka/kafkaConsumer.j
 
 const app = express();
 const PORT = process.env.PORT;
-// const PORT = 3001;
 const SERVER_DELAY = process.env.SERVER_DELAY;
 
 // Middleware

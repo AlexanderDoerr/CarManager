@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const sleep = require('sleep-promise');
 const eurekaClient = require('./eurekaConfig.js');
-const controller = require('./controller/maintenanceController.js');
+const remindersRoutes = require('./routes/reminders.js');
 const { connectToDatabase, disconnectFromDatabase } = require('./data/db.js');
 const { connectProducer, disconnectProducer } = require('./kafka/kafkaProducer.js');
 const { connectConsumer, disconnectConsumer } = require('./kafka/kafkaConsumer.js');
@@ -14,14 +14,16 @@ const SERVER_DELAY = process.env.SERVER_DELAY;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(remindersRoutes);
+
 
 /***********************************************************************************************/
 
 const server = app.listen(PORT, async () => {
   try {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Waiting for ${SERVER_DELAY} seconds before registering the service to Eureka...`);
-    await sleep(SERVER_DELAY);
+    console.log(`Waiting for ${SERVER_DELAY/1000} seconds before registering the service to Services...`);
+    // await sleep(SERVER_DELAY);
 
     console.log('Registering the service to Eureka...');
     eurekaClient.start();

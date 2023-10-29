@@ -3,6 +3,8 @@ const {consumeInvoiceCreatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeMileageUpdatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeCarCreatedEvent} = require('../kafka/kafkaConsumer.js');
 
+/****************************************************************************************************/
+
 const createMaintenanceRecord = async (carId, serviceType, serviceDate, serviceMileage) => {
     const carRows = await maintenanceModel.getCar(carId);
 
@@ -62,10 +64,89 @@ const updateMaintenanceRecord = async (reminders, serviceType) => {
         }
     }
 };
+
 /****************************************************************************************************/
+
+const getAllRemindersByCarId = async (req, res) => {
+    try{
+        const userId = req.user.id
+        const carId = req.params.carId;
+
+        // Check if user exists and owns the car
+        if (user.length === 0 || car[0].userId !== userId) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        const reminders = await maintenanceModel.getAllMaintenanceByCarId(carId);
+
+        if (reminders.length === 0) {
+            return res.status(404).json({ message: 'No maintenance reminders found' });
+        };
+
+        res.status(200).json(reminders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the maintenance reminders' });
+    }
+};
+
+const getPendingRemindersByCarId = async (req, res) => {
+    try {
+        const userId = req.user.id
+        const carId = req.params.carId;
+
+        // Check if user exists and owns the car
+        if (user.length === 0 || car[0].userId !== userId) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        const reminders = await maintenanceModel.getPendingMaintenanceByCarId(carId);
+
+        if (reminders.length === 0) {
+            return res.status(404).json({ message: 'No maintenance reminders found' });
+        };
+
+        res.status(200).json(reminders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the maintenance reminders' });
+    }
+};
+
+const getCompletedRemindersByCarId = async (req, res) => {
+    try {
+        const userId = req.user.id
+        const carId = req.params.carId;
+
+        const user = await maintenanceModel.getUserByUserId(userId);
+        const car = await maintenanceModel.getCar(carId);
+
+        // Check if user exists and owns the car
+        if (user.length === 0 || car[0].userId !== userId) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        const reminders = await maintenanceModel.getCompletedMaintenanceByCarId(carId);
+
+        if (reminders.length === 0) {
+            return res.status(404).json({ message: 'No completed maintenance reminders found' });
+        };
+
+        res.status(200).json(reminders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the completed maintenance reminders' });
+    }
+};
+
+/****************************************************************************************************/
+
 
 module.exports = {
     createMaintenanceRecord,
     createCarRecord,
-    
+    getDueMileage,
+    getAllRemindersByCarId,
+    getPendingRemindersByCarId,
+    getCompletedRemindersByCarId, 
 };

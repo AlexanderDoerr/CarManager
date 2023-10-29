@@ -4,8 +4,8 @@ const sleep = require('sleep-promise');
 
 const kafka = new Kafka({
   clientId: 'car-service',
-  brokers: ['localhost:9092']
-// brokers: ['kafka:29092']
+//   brokers: ['localhost:9092']
+    brokers: ['kafka:29092']
 });
 
 

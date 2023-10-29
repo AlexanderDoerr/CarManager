@@ -38,10 +38,7 @@ services:
     networks:
       - netPRO390
     ports:
-      - "9092:9092"
-    # volumes:
-    #   - ./Scripts/Kafka/kafka-entrypoint.sh:/kafka-entrypoint.sh
-    # entrypoint: /kafka-entrypoint.sh      
+      - "9092:9092"    
 
 #Databases
 #####################################################################################################
@@ -135,21 +132,21 @@ services:
       - UserServiceDB
       - CarManagerAPIGateway
 
-  # CarServiceAPI:
-  #   build:
-  #     context: ./carserviceapi
-  #     dockerfile: Dockerfile
-  #   image: carserviceapi:1
-  #   restart: always
-  #   hostname: CarServiceAPI
-  #   ports:
-  #     - 3001:3000
-  #   networks:
-  #     - netPRO390
-  #   depends_on:
-  #     - EurekaServer
-  #     - CarServiceDB
-  #     - CarManagerAPIGateway
+  CarServiceAPI:
+    build:
+      context: ./carserviceapi
+      dockerfile: Dockerfile
+    image: carserviceapi:1
+    restart: always
+    hostname: CarServiceAPI
+    ports:
+      - 3001:3000
+    networks:
+      - netPRO390
+    depends_on:
+      - EurekaServer
+      - CarServiceDB
+      - CarManagerAPIGateway
 
   # MaintenanceReminderServiceAPI:
   #   build:

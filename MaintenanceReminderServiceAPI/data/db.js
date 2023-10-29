@@ -41,8 +41,7 @@ const disconnectFromDatabase = () => {
   });
 };
 
-// Initial attempt to connect
-connectToDatabase();
+
 
 
 
