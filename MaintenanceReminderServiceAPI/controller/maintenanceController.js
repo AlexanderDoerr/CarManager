@@ -72,8 +72,10 @@ const getAllRemindersByCarId = async (req, res) => {
         const userId = req.user.id
         const carId = req.params.carId;
 
+        const user = await maintenanceModel.getUserCar(userId, carId);
+
         // Check if user exists and owns the car
-        if (user.length === 0 || car[0].userId !== userId) {
+        if (!req.user || user[0].userId !== userId) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
@@ -96,7 +98,10 @@ const getPendingRemindersByCarId = async (req, res) => {
         const carId = req.params.carId;
 
         // Check if user exists and owns the car
-        if (user.length === 0 || car[0].userId !== userId) {
+        const user = await maintenanceModel.getUserCar(userId, carId);
+
+        // Check if user exists and owns the car
+        if (!req.user || user[0].userId !== userId) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
@@ -118,11 +123,10 @@ const getCompletedRemindersByCarId = async (req, res) => {
         const userId = req.user.id
         const carId = req.params.carId;
 
-        const user = await maintenanceModel.getUserByUserId(userId);
-        const car = await maintenanceModel.getCar(carId);
+        const user = await maintenanceModel.getUserCar(userId, carId);
 
         // Check if user exists and owns the car
-        if (user.length === 0 || car[0].userId !== userId) {
+        if (!req.user || user[0].userId !== userId) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 

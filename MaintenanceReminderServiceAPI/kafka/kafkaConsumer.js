@@ -4,8 +4,8 @@ const db = require('../data/db.js');
 
 const kafka = new Kafka({
   clientId: 'maintenance-reminder-service',
-  brokers: ['localhost:9092']
-// brokers: ['kafka:29092']
+//   brokers: ['localhost:9092']
+brokers: ['kafka:29092']
 });
 
 const carCreatedConsumer = kafka.consumer({ groupId: 'car-created-consumer-group' });

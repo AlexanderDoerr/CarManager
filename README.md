@@ -21,6 +21,7 @@ docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic us
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic invoice-created
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic mileage-updated
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic car-created
+docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic password-reset-email-request
 
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic user-created --from-beginning
 

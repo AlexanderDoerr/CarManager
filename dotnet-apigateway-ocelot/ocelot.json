@@ -39,6 +39,26 @@
         "Key": null,
         "Expiry": 0
       }
+    },
+    {
+      "ServiceName": "MaintenanceReminderServiceAPI",
+      "DownstreamPathTemplate": "/{everything}",
+      "UpstreamPathTemplate": "/reminderapi/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ],
+      "FileCacheOptions": {
+        "TtlSeconds": 15
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection",
+        "Key": null,
+        "Expiry": 0
+      }
     }
   ],
   "GlobalConfiguration": {

@@ -42,3 +42,13 @@ VALUES
     'IL',
     62704
 );
+
+-- Create password reset tokens table
+CREATE TABLE password_reset_tokens
+(
+    TokenId INT AUTO_INCREMENT PRIMARY KEY,
+    Token VARCHAR(255) UNIQUE,
+    UserId CHAR(36),
+    CreatedAt TIMESTAMP DEFAULT (UTC_TIMESTAMP()),
+    FOREIGN KEY (UserId) REFERENCES user(UserId)
+);

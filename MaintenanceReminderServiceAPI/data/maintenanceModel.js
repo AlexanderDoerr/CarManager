@@ -33,7 +33,7 @@ const updateMaintenance = async (reminderId, updates) => {
 
 const getUserByUserId = async (userId) => {
     try {
-        const query = 'SELECT userId FROM Car WHERE userId = ?';
+        const query = 'SELECT * FROM Car WHERE userId = ?';
         const [rows] = await promiseConnection.execute(query, [userId]);
         console.log('User retrieved successfully.');
         return rows;
@@ -43,8 +43,22 @@ const getUserByUserId = async (userId) => {
     }
 };
 
+const getUserCar = async (userId, carId) => {
+    try{
+        const query = 'SELECT userId FROM Car WHERE userId = ? AND carId = ?';
+        const [rows] = await promiseConnection.execute(query, [userId, carId]);
+        console.log('User cars retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving the user cars: ' + error.message);
+    }
+};
+
+
 const getAllMaintenanceByCarId = async (carId) => {
     try {
+        console.log(`Model carId = ${carId}`);
         const query = 'SELECT * FROM Reminder WHERE carId = ?';
         const [rows] = await promiseConnection.execute(query, [carId]);
         console.log('Maintenance reminders retrieved successfully.');
@@ -185,5 +199,6 @@ module.exports = {
     calculateNextServices,
     getUserByUserId,
     getCompletedMaintenanceByCarId,
-    getPendingMaintenanceByCarId
+    getPendingMaintenanceByCarId,
+    getUserCar
 };

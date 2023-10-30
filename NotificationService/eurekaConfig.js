@@ -4,22 +4,22 @@ const uuid = require('uuid'); // Add this line to import the 'uuid' package
 
 const uniqueId = uuid.v4(); // Generate a unique UUID
 
-const instanceId = `UserServiceAPI:${uniqueId}:${process.env.PORT || 3000}`; // Update the instanceId variable to include the unique UUID
+const instanceId = `NotificationService:${uniqueId}:${process.env.PORT || 3000}`; // Update the instanceId variable to include the unique UUID
 
 const ipAddress = ip.address();
 
 const eurekaClient = new Eureka({
   instance: {
-    app: 'UserServiceAPI',
+    app: 'NotificationService',
     instanceId: instanceId,
-    hostName: 'UserServiceAPI',
+    hostName: 'NotificationService',
     ipAddr: ipAddress,
     statusPageUrl: `http://${ipAddress}:${process.env.PORT || 3000}`,
     port: {
       '$': process.env.PORT || 3000,
       '@enabled': 'true',
     },
-    vipAddress: 'UserServiceAPI',
+    vipAddress: 'NotificationService',
     dataCenterInfo: {
       '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
       name: 'MyOwn',
