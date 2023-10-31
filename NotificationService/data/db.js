@@ -25,6 +25,7 @@ const disconnect = () => {
 };
 
 module.exports = {
+    client,
     connect,
     disconnect
 };
