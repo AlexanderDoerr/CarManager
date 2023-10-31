@@ -127,21 +127,21 @@ services:
 #API Services
 #####################################################################################################
 
-  # UserServiceAPI:
-  #   build:
-  #     context: ./userserviceapi
-  #     dockerfile: Dockerfile
-  #   image: userserviceapi:1
-  #   restart: always
-  #   hostname: UserServiceAPI
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - netPRO390
-  #   depends_on:
-  #     - EurekaServer
-  #     - UserServiceDB
-  #     - CarManagerAPIGateway
+  UserServiceAPI:
+    build:
+      context: ./userserviceapi
+      dockerfile: Dockerfile
+    image: userserviceapi:1
+    restart: always
+    hostname: UserServiceAPI
+    ports:
+      - 3000:3000
+    networks:
+      - netPRO390
+    depends_on:
+      - EurekaServer
+      - UserServiceDB
+      - CarManagerAPIGateway
 
   CarServiceAPI:
     build:

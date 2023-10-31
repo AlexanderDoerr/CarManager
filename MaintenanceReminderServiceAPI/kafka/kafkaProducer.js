@@ -34,13 +34,10 @@ const publishMaintenanceReminderCreatedEvent = async (reminderId, carId, userId,
                 },
             ],
         });
-        console.log('Message sent successfully');
+        console.log('maintenance-reminder-created Event');
     } catch (error) {
         console.error('Error sending message:', error);
-    } finally {
-        await producer.disconnect();
-        console.log('Producer disconnected');
-    }
+    } 
 };
 
 

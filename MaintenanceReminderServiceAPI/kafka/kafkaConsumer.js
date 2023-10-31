@@ -53,7 +53,7 @@ const consumeMileageUpdatedEvent = async (callback) => {
 };
 
 const consumeCarCreatedEvent = async (callback) => {
-
+    
     await carCreatedConsumer.subscribe({ topic: 'car-created', fromBeginning: true });
   
     carCreatedConsumer.run({

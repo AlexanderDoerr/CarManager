@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'Outlook365',
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: '',
+        pass: '',
     },
 });
 
@@ -15,6 +15,21 @@ const sendReminderEmail = async (to, subject, carId, serviceType, dueDate, dueMi
             to, // list of receivers
             subject, // Subject line
             html: reminderEmail(carId, serviceType, dueDate, dueMileage), // plain text body
+            // html: '<b>Hello world?</b>' // html body (if needed)
+        });
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error(`Error in sendEmail: ${error}`);
+    }
+};
+
+const sendTestEmail = async (to, subject) => {
+    try {
+        await transporter.sendMail({
+            from: 'adoerr@student.neumont.edu', // sender address
+            to, // list of receivers
+            subject, // Subject line
+            html: 'This is s teat eamil' // plain text body
             // html: '<b>Hello world?</b>' // html body (if needed)
         });
         console.log('Email sent successfully');
@@ -92,5 +107,6 @@ const reminderEmail = (carId, serviceType, dueDate, dueMileage) => {
 };
 
 module.exports = {
-    sendEmail,
+    sendReminderEmail,
+    sendTestEmail
 };

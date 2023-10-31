@@ -1,7 +1,9 @@
+const schedule = require('node-schedule');
 const maintenanceModel = require('../data/maintenanceModel.js');
 const {consumeInvoiceCreatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeMileageUpdatedEvent} = require('../kafka/kafkaConsumer.js');
 const {consumeCarCreatedEvent} = require('../kafka/kafkaConsumer.js');
+const {publishMaintenanceReminderCreatedEvent} = require('../kafka/kafkaProducer.js');
 
 /****************************************************************************************************/
 
@@ -49,21 +51,46 @@ const getDueMileage = async (carId, mileage, serviceType) => {
     console.log(`Found ${reminders.length} due mileage maintenance reminders.`);
     console.log(reminders);
     console.log(serviceType);
-    await updateMaintenanceRecord(reminders, serviceType);
+    await updateMaintenanceRecord(reminders);
     return reminders;
 };
 
 consumeMileageUpdatedEvent(getDueMileage);
 
-const updateMaintenanceRecord = async (reminders, serviceType) => {
+const updateMaintenanceRecord = async (reminders) => {
     for (const reminder of reminders) {
-        if (reminder.serviceType === serviceType) {
-            const reminderId = reminder.reminderId;
-            const status = 'completed';
-            await maintenanceModel.updateMaintenance(reminderId, { status });
-        }
+        const reminderId = reminder.reminderId;
+        const status = 'completed';
+        await maintenanceModel.updateMaintenance(reminderId, { status });
+
+        // Assuming you have necessary info for these parameters
+        const carId = reminder.carId;
+        const userId = reminder.userId;
+        const serviceType = reminder.serviceType;
+        const dueDate = reminder.dueDate;
+        const dueMileage = reminder.dueMileage;
+
+        // Call the producer to send a reminder created event
+        await publishMaintenanceReminderCreatedEvent(reminderId, carId, userId, serviceType, dueDate, dueMileage);
     }
 };
+
+/****************************************************************************************************/
+
+const dailyJob = async () => { 
+    schedule.scheduleJob('0 0 * * *', async () => {
+        try {
+            console.log('Running daily job...');
+            const reminders = await maintenanceModel.getDailyDueMaintenanceReminders();
+            console.log(`Found ${reminders.length} pending maintenance reminders.`);
+            console.log(reminders);
+            await updateMaintenanceRecord(reminders);
+        } catch (error) {
+            console.error('Error in daily job:', error);
+        }
+    });
+};
+
 
 /****************************************************************************************************/
 
@@ -153,4 +180,5 @@ module.exports = {
     getAllRemindersByCarId,
     getPendingRemindersByCarId,
     getCompletedRemindersByCarId, 
+    dailyJob
 };

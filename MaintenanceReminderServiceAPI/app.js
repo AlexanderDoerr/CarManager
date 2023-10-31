@@ -6,6 +6,7 @@ const remindersRoutes = require('./routes/reminders.js');
 const { connectToDatabase, disconnectFromDatabase } = require('./data/db.js');
 const { connectProducer, disconnectProducer } = require('./kafka/kafkaProducer.js');
 const { connectConsumer, disconnectConsumer } = require('./kafka/kafkaConsumer.js');
+const { dailyJob } = require('./controller/maintenanceController.js');
 
 const app = express();
 // const PORT = process.env.PORT;
@@ -34,6 +35,9 @@ const server = app.listen(PORT, async () => {
     console.log('Connected to Kafka producer');
     await connectConsumer();
     console.log('Connected to Kafka consumer');
+
+    dailyJob();
+    console.log('Scheduled the daily maintenance job');
 
   } catch (error) {
     console.error(`Error: ${error.message}`);

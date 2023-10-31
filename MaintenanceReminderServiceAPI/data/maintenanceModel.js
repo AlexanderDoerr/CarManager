@@ -118,6 +118,18 @@ const getDueMileageMaintenanceReminders = async (carId, mileage) => {
     }
 };
 
+const getDailyDueMaintenanceReminders = async () => {
+    try {
+        const query = "SELECT * FROM Reminder WHERE dueDate <= CURDATE() AND status = 'pending'";
+        const [rows] = await promiseConnection.execute(query);
+        console.log('Daily due maintenance reminders retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving daily due maintenance reminders: ' + error.message);
+    }
+};
+
 /*********************************************************************************************************************/
 
 
@@ -200,5 +212,6 @@ module.exports = {
     getUserByUserId,
     getCompletedMaintenanceByCarId,
     getPendingMaintenanceByCarId,
-    getUserCar
+    getUserCar,
+    getDailyDueMaintenanceReminders
 };

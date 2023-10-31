@@ -30,7 +30,7 @@ const server = app.listen(PORT, async () => {
   try {
     console.log(`Server running on port ${PORT}`);
     console.log(`Waiting for ${SERVER_DELAY/1000} seconds before registering services`);
-    // await sleep(SERVER_DELAY);
+    await sleep(SERVER_DELAY);
 
     console.log('Registering the service to Eureka...');
     eurekaClient.start();

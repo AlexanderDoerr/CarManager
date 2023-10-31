@@ -73,3 +73,7 @@ VALUES
     ('Battery Replacement', 48, 50000),
     ('Timing Belt Replacement', 60, 75000),
     ('Fuel Filter Replacement', 24, 30000);
+
+CREATE INDEX idx_dueDate_status ON Reminder (dueDate, status);
+
+    
