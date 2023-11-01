@@ -1,12 +1,16 @@
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
+let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: '',
-        pass: '',
-    },
-});
+      type: 'OAuth2',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+      clientId: process.env.OAUTH_CLIENTID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      refreshToken: process.env.OAUTH_REFRESH_TOKEN
+    }
+  });
 
 const sendReminderEmail = async (to, subject, carId, serviceType, dueDate, dueMileage) => {
     try {
@@ -29,7 +33,7 @@ const sendTestEmail = async (to, subject) => {
             from: 'adoerr@student.neumont.edu', // sender address
             to, // list of receivers
             subject, // Subject line
-            html: 'This is s teat eamil' // plain text body
+            html: 'This is s teat email' // plain text body
             // html: '<b>Hello world?</b>' // html body (if needed)
         });
         console.log('Email sent successfully');

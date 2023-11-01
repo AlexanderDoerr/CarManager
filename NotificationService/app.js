@@ -9,7 +9,7 @@ const emailService = require('./email/emailService.js');
 const SERVER_DELAY = process.env.SERVER_DELAY || 30000;
 
 const run = async () => {
-    emailService.sendTestEmail('alexdoerr@live.com', 'Test Email');
+    emailService.sendTestEmail('alexdoerr@live.com', 'Connor is a butt');
     // await sleep(SERVER_DELAY);
     // await eurekaClient.start();
     // await db.connect();
