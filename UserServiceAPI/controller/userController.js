@@ -1,6 +1,8 @@
 const userData = require('../data/userModel.js');
 const auth = require('../middleware/auth.js');
 const { sendUserCreatedEvent  } = require('../kafka/kafkaProducer.js');
+const { consumeEmailRequestEvent } = require('../kafka/kafkaConsumer.js');
+const { sendEmailResponseEvent } = require('../kafka/kafkaProducer.js');
 
 const EMAIL_EXISTS_ERROR = "Email already exists";
 const PHONE_EXISTS_ERROR = "Phone number already exists";
@@ -112,6 +114,21 @@ const patchUserController = async (req, res) => {
         res.status(500).json({message: 'An error occurred while updating the user'});
     }
 };
+
+/****************************************************************************************************/
+
+const sendUsersEmail = async (userId, reminderId) => {
+    try {
+        const user = await userData.getUser(userId);
+        const email = user.Email;
+
+        await sendEmailResponseEvent(email, reminderId);
+    } catch (error) {
+        console.error(`error in sendUserEmail: ${error}`);
+    }
+};
+
+consumeEmailRequestEvent(sendUsersEmail);
 
 /****************************************************************************************************/
 

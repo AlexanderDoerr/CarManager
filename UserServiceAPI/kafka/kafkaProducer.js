@@ -40,10 +40,18 @@ const sendPasswordResetEmailEvent = async (email, token) => {
   });
 };
 
+const sendEmailResponseEvent = async (email, reminderId) => {
+  await producer.send({
+    topic: 'user-email-response',
+    messages: [{ value: JSON.stringify({ email, reminderId }) }],
+  });
+};
+
 
 module.exports = {
   connectProducer,
   disconnectProducer,
   sendUserCreatedEvent,
   sendPasswordResetEmailEvent,
+  sendEmailResponseEvent
 };

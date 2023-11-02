@@ -18,7 +18,7 @@ const disconnectProducer = async () => {
 
 const sendUserEmailRequestEvent = async(userId, reminderId) => {
     await producer.send({
-        topic: 'email-request',
+        topic: 'user-email-request',
         messages: [
         { value: JSON.stringify({ userId, reminderId }) },
         ],

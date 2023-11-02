@@ -15,13 +15,27 @@ let transporter = nodemailer.createTransport({
 const sendReminderEmail = async (to, subject, carId, serviceType, dueDate, dueMileage) => {
     try {
         await transporter.sendMail({
-            from: 'adoerr@student.neumont.edu', // sender address
+            from: 'carmanagerservice1@gmail.com', // sender address
             to, // list of receivers
             subject, // Subject line
-            html: reminderEmail(carId, serviceType, dueDate, dueMileage), // plain text body
+            html: reminderEmailHTML(carId, serviceType, dueDate, dueMileage), // plain text body
             // html: '<b>Hello world?</b>' // html body (if needed)
         });
-        console.log('Email sent successfully');
+        console.log('Reminder Email sent successfully');
+    } catch (error) {
+        console.error(`Error in sendEmail: ${error}`);
+    }
+};
+
+const sendPasswordResetEmail = async (to, subject, passwordResetToken) => {
+    try {
+        await transporter.sendMail({
+            from: 'carmanagerservice1@gmail.com',
+            to, 
+            subject, 
+            html: passwordResetEmail(passwordResetToken)
+        });
+        console.log('Password Email sent successfully');
     } catch (error) {
         console.error(`Error in sendEmail: ${error}`);
     }
@@ -30,7 +44,7 @@ const sendReminderEmail = async (to, subject, carId, serviceType, dueDate, dueMi
 const sendTestEmail = async (to, subject) => {
     try {
         await transporter.sendMail({
-            from: 'adoerr@student.neumont.edu', // sender address
+            from: 'carmanagerservice1@gmail.com', // sender address
             to, // list of receivers
             subject, // Subject line
             html: 'This is s teat email' // plain text body
@@ -42,9 +56,40 @@ const sendTestEmail = async (to, subject) => {
     }
 };
 
+const passwordResetEmail = (passwordResetToken) => {
+    const resetUrl = `https://your-app.com/reset-password?token=${passwordResetToken}`;
+    const html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            /* ...your styles... */
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">Password Reset</div>
+            <div class="content">
+                Hello! It appears that you have requested a password reset. Please click the link below to reset your password.
+            </div>
+            <div class="details">
+                <a href="${resetUrl}" target="_blank">Reset Password</a>
+            </div>
+            <div class="content">
+                If you did not request a password reset, please ignore this email.
+            </div>
+            <div class="footer">This is an automated password reset email. Please do not reply to this email.</div>
+        </div>
+    </body>
+    </html>`;
+
+    return html;
+};
 
 
-const reminderEmail = (carId, serviceType, dueDate, dueMileage) => {
+
+
+const reminderEmailHTML = (carId, serviceType, dueDate, dueMileage) => {
     const html = `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -110,7 +155,10 @@ const reminderEmail = (carId, serviceType, dueDate, dueMileage) => {
     return html;
 };
 
+
+
 module.exports = {
     sendReminderEmail,
+    sendPasswordResetEmail,
     sendTestEmail
 };

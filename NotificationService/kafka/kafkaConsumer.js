@@ -3,8 +3,8 @@ const sleep = require('sleep-promise');
 
 const kafka = new Kafka({
   clientId: 'car-service',
-//   brokers: ['localhost:9092']
-    brokers: ['kafka:29092']
+  brokers: ['localhost:9092']
+    // brokers: ['kafka:29092']
 });
 
 
@@ -42,7 +42,8 @@ const consumePasswordResetEvent = async (callback) => {
     
     passResetConsumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            const { userEmail, resetToken } = JSON.parse(message.value.toString());
+            const { data } = JSON.parse(message.value.toString());
+            const { userEmail, resetToken } = data;
             console.log(`Received message for userEmail: ${userEmail}, passwordResetToken: ${resetToken}`);
             callback(userEmail, resetToken);
         },
@@ -51,7 +52,7 @@ const consumePasswordResetEvent = async (callback) => {
 
 const consumeEmailResponseEvent = async (callback) => {
     
-    await reminderConsumer.subscribe({ topic: 'email-response', fromBeginning: true });
+    await reminderConsumer.subscribe({ topic: 'user-email-response', fromBeginning: true });
     
     reminderConsumer.run({
         eachMessage: async ({ topic, partition, message }) => {

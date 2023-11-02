@@ -23,7 +23,8 @@ docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic mi
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic car-created
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic maintenance-reminder-created
 docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic password-reset-email-request
-docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic email-request
+docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic user-email-request
+docker exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic user-email-response
 
 
 
@@ -32,6 +33,8 @@ docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic invoice-created --from-beginning
 
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic car-created --from-beginning
+
+docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic password-reset-email-request --from-beginning
 
 
 List all topics
