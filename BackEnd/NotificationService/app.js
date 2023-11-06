@@ -22,13 +22,13 @@ const server = app.listen(PORT, async () => {
     //   await sleep(SERVER_DELAY);
   
       console.log('Registering the service to Eureka...');
-      eurekaClient.start();
-  
+      eurekaClient.start();  
 
       await kafkaConsumer.connectConsumer();
         console.log('Connected to Kafka consumer');
       await kafkaProducer.connectProducer();
       console.log('Connected to Kafka producer');
+      
     } catch (error) {
       console.error(`Error: ${error.message}`);
     }

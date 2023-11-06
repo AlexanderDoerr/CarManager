@@ -47,6 +47,7 @@ consumeCarCreatedEvent(createCarRecord);
 /****************************************************************************************************/
 
 const getDueMileage = async (carId, mileage, serviceType) => {
+    
     const reminders = await maintenanceModel.getDueMileageMaintenanceReminders(carId, mileage);
     console.log(`Found ${reminders.length} due mileage maintenance reminders.`);
     console.log(reminders);

@@ -106,9 +106,25 @@ const getDueMaintenanceReminders = async (carId) => {
     }
 };
 
+// const getDueMileageMaintenanceReminders = async (carId, mileage) => {
+//     try {
+//         const query = "SELECT * FROM Reminder WHERE carId = ? AND status = 'pending' AND dueMileage <= ?";
+//         const [rows] = await promiseConnection.execute(query, [carId, mileage]);
+//         console.log('Due mileage maintenance reminders retrieved successfully.');
+//         return rows;
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error('An error occurred while retrieving due mileage maintenance reminders: ' + error.message);
+//     }
+// };
+
 const getDueMileageMaintenanceReminders = async (carId, mileage) => {
     try {
-        const query = "SELECT * FROM Reminder WHERE carId = ? AND status = 'pending' AND dueMileage <= ?";
+        const query = `
+            SELECT Reminder.*, Car.userId
+            FROM Reminder
+            JOIN Car ON Reminder.carId = Car.carId
+            WHERE Reminder.carId = ? AND Reminder.status = 'pending' AND Reminder.dueMileage <= ?`;
         const [rows] = await promiseConnection.execute(query, [carId, mileage]);
         console.log('Due mileage maintenance reminders retrieved successfully.');
         return rows;
@@ -117,6 +133,7 @@ const getDueMileageMaintenanceReminders = async (carId, mileage) => {
         throw new Error('An error occurred while retrieving due mileage maintenance reminders: ' + error.message);
     }
 };
+
 
 const getDailyDueMaintenanceReminders = async () => {
     try {

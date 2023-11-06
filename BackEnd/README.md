@@ -34,6 +34,8 @@ docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:
 
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic car-created --from-beginning
 
+docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic maintenance-reminder-created --from-beginning
+
 docker exec --interactive kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic password-reset-email-request --from-beginning
 
 

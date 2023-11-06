@@ -7,6 +7,16 @@ const client = redis.createClient({url: 'redis://localhost:6379'});
 
 /*****************************************************************************************************************/
 
+(async () => {
+    try {
+        await client.connect();
+        console.log('Connected to Redis');
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+    }
+})();
+
 // Event handling
 client.on('connect', function() {
     console.log('Redis client connected');
@@ -32,15 +42,25 @@ client.on('warning', function(warning) {
     console.warn(`Redis warning: ${warning}`);
 });
 
+
 /*****************************************************************************************************************/
 
 const storeNewReminder = async (reminderId, carId, userId, serviceType, dueDate, dueMileage) => {
+    // console.log(`Calling StoreNewReminder Function reminderId: ${reminderId}, car: ${carId}, userId: ${userId}, serviceType: ${serviceType}, dueDate: ${dueDate}, dueMileage: ${dueMileage}`)
+
+    //I am faling here somehow and I don't know why
     try {
-        await storeReminder(reminderId, carId, userId, serviceType, dueDate, dueMileage);
+        storeReminder(reminderId, carId, userId, serviceType, dueDate, dueMileage)
+        .then((result) => {
+            console.log(`Result of Redis Store - ${result}`); // This will log the value passed 
 
-        await kafkaProducer.sendUserEmailRequestEvent(userId, reminderId);
+          })
+          .catch((error) => {
+            console.error(error); // This will log any error that occurred during the operation
+          });
 
-        console.log('Reminder stored and email request event sent successfully');
+          console.log(userId, reminderId)
+        // await kafkaProducer.sendUserEmailRequestEvent(userId, reminderId);
 
     } catch (error) {
         console.error(`error in storeNewReminder: ${error}`);
@@ -119,6 +139,16 @@ const storeReminder = (reminderId, carId, userId, serviceType, dueDate, dueMilea
         });
       });
 };
+
+// const storeReminder = (reminderId, carId, userId, serviceType, dueDate, dueMileage) => {
+//     console.log(`Calling StoreReminder Function reminderId: ${reminderId}, car: ${carId}, userId: ${userId}, serviceType: ${serviceType}, dueDate: ${dueDate}, dueMileage: ${dueMileage}`)
+//     const key = reminderId;
+//     const value = { carId, userId, serviceType, dueDate, dueMileage };
+//             client.set(key, JSON.stringify(value), (err, res) => {
+//           if(err) reject(err);
+//           else resolve(res);
+//         });
+// };
 
 const getData = (reminderId) => {
     const key = reminderId;

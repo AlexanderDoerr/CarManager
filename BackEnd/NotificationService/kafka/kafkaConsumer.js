@@ -30,7 +30,7 @@ const consumeReminderEvent = async (callback) => {
     reminderConsumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const { reminderId, carId, userId, serviceType, dueDate, dueMileage } = JSON.parse(message.value.toString());
-            console.log(`Received message for reminderId: ${reminderId}, car: ${carId}, userId: ${userId}, serviceType: ${serviceType}, dueDate: ${dueDate}, dueMileage: ${dueMileage}`);
+            console.log(`Received ReminderEvent - reminderId: ${reminderId}, car: ${carId}, userId: ${userId}, serviceType: ${serviceType}, dueDate: ${dueDate}, dueMileage: ${dueMileage}`);
             callback(reminderId, carId, userId, serviceType, dueDate, dueMileage);
         },
     });
