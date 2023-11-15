@@ -8,7 +8,7 @@ const createUser = async (user) => {
         let hashedPassword = await encryptPassword(user.Password);
         await promiseConnection.execute(
             'INSERT INTO user (UserId, FirstName, LastName, DateOfBirth, Email, PhoneNumber, Password, Address, City, State, ZipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, user.Address, user.City, user.State, user.ZipCode]
+            [ uuidv4(), user.FirstName, user.LastName, user.DateOfBirth, user.Email, user.PhoneNumber, hashedPassword, null, null, null, null]
         );
         console.log('User created successfully.');
         // Retrieve the inserted user

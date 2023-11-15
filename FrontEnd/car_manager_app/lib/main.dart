@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'create_account_page.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,12 +16,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -26,79 +33,126 @@ class _LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
 
-  void _submit() {
+  void _submitLogin() async {
     if (_formKey.currentState!.validate()) {
-      // If the form is valid, display a Snackbar.
+      // Save the form
+      _formKey.currentState!.save();
+
+      // Display a Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
-      // Here you would typically call your API for login
+
+      var url = Uri.parse('http://10.0.2.2:5041/userapi/user/login');
+
+      try {
+        var response = await http.post(
+          url,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode({'email': _email, 'password': _password}),
+        );
+
+        if (response.statusCode == 200) {
+          // Accessing the 'set-cookie' header
+          String? cookie = response.headers['set-cookie'];
+          if (cookie != null) {
+            // Extract the token from the cookie string
+            var token = cookie
+                .split(';')
+                .firstWhere((item) => item.trim().startsWith('token='),
+                    orElse: () => '')
+                .split('=')
+                .last;
+            print('Token: $token');
+          } else {
+            print('No cookie found in response');
+          }
+        } else {
+          throw Exception('Failed to load API data');
+        }
+      } catch (e) {
+        print('Caught error: $e');
+      }
     }
   }
+
+// void _submitCreateUser() async {
+
+// }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login Page'),
+      ),  
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const Text(
-                'Welcome to Car Manager!',
-                style: TextStyle(fontSize: 24.0),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40.0),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+          child: SingleChildScrollView(
+            // Add this
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                const Text(
+                  'Welcome to Car Manager!',
+                  style: TextStyle(fontSize: 24.0),
+                  textAlign: TextAlign.center,
                 ),
-                validator: (value) {
-                  if (value!.isEmpty || !value.contains('@')) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _email = value!,
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 40.0),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _email = value!,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty || value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _password = value!,
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: _submit,
-                child: const Text('Login'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to password reset page
-                },
-                child: const Text('Forgot Password?'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to account creation page
-                },
-                child: const Text("Don't have an account? Create one."),
-              ),
-            ],
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 8) {
+                      return 'Password must be at least 8 characters long';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _password = value!,
+                ),
+                const SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: _submitLogin,
+                  child: const Text('Login'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Navigate to password reset page
+                  },
+                  child: const Text('Forgot Password?'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CreateAccountPage(),
+                      ),
+                    );
+                  },
+                  child: const Text("Don't have an account? Create one."),
+                ),
+              ],
+            ),
           ),
         ),
       ),

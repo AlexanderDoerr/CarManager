@@ -57,6 +57,8 @@ const loginUserController = async (req, res) => {
     try{
         const email = req.body.email;
         const password = req.body.password;
+        console.log(email);
+        console.log(password);
         const loggedInUser = await userData.loginUser(email, password);
         
         if (!loggedInUser) {
