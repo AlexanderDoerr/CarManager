@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'create_account_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'home_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -33,52 +35,65 @@ class _LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
 
-  void _submitLogin() async {
-    if (_formKey.currentState!.validate()) {
-      // Save the form
-      _formKey.currentState!.save();
+void _submitLogin() async {
+  if (_formKey.currentState!.validate()) {
+    
+    _formKey.currentState!.save();
 
-      // Display a Snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Processing Data')),
+    );
+
+    var url = Uri.parse('http://10.0.2.2:5041/userapi/user/login');
+
+    try {
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({'email': _email, 'password': _password}),
       );
 
-      var url = Uri.parse('http://10.0.2.2:5041/userapi/user/login');
+      if (response.statusCode == 200) {
+        String? token = extractTokenFromCookie(response.headers['set-cookie']);
+        if (token.isNotEmpty) {
+          const storage = FlutterSecureStorage();
+          await storage.write(key: 'jwt_token', value: token);
 
-      try {
-        var response = await http.post(
-          url,
-          headers: {"Content-Type": "application/json"},
-          body: json.encode({'email': _email, 'password': _password}),
+          // Navigate to home page
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage(username: "John")),
         );
-
-        if (response.statusCode == 200) {
-          // Accessing the 'set-cookie' header
-          String? cookie = response.headers['set-cookie'];
-          if (cookie != null) {
-            // Extract the token from the cookie string
-            var token = cookie
-                .split(';')
-                .firstWhere((item) => item.trim().startsWith('token='),
-                    orElse: () => '')
-                .split('=')
-                .last;
-            print('Token: $token');
-          } else {
-            print('No cookie found in response');
-          }
         } else {
-          throw Exception('Failed to load API data');
+          showSnackBar('No token found in response.');
         }
-      } catch (e) {
-        print('Caught error: $e');
+      } else {
+        showSnackBar('Login failed: ${response.body}');
       }
+    } catch (e) {
+      showSnackBar('An error occurred: $e');
     }
   }
+}
 
-// void _submitCreateUser() async {
+void showSnackBar(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
 
-// }
+
+String extractTokenFromCookie(String? cookie) {
+  if (cookie == null) return '';
+  return cookie
+      .split(';')
+      .firstWhere((item) => item.trim().startsWith('token='),
+          orElse: () => '')
+      .split('=')
+      .last;
+}
+
 
   @override
   Widget build(BuildContext context) {

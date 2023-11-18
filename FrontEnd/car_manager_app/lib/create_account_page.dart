@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'home_page.dart';
 
 
 
@@ -28,39 +30,76 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController _confirmPasswordController = TextEditingController();
 
   // Function to handle form submission
-  void _submitCreateAccount() async {
-    if (_formKey.currentState!.validate()) {
-      // Save the form
-      _formKey.currentState!.save();
+void _submitCreateAccount() async {
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
 
-      // API call logic here...
-      var url = Uri.parse('http://10.0.2.2:5041/userapi/user/register');
+    var url = Uri.parse('http://10.0.2.2:5041/userapi/user/register');
 
-      try {
-        var response = await http.post(
-          url,
-          headers: {"Content-Type": "application/json"},
-          body: json.encode({
-            'FirstName': firstName,
-            'LastName': lastName,
-            'DateOfBirth': dateOfBirth,
-            'Email': email,
-            'PhoneNumber': phoneNumber,
-            'Password': password,
-            // Add other fields similarly
-          }),
-        );
+    try {
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          'FirstName': firstName,
+          'LastName': lastName,
+          'DateOfBirth': dateOfBirth,
+          'Email': email,
+          'PhoneNumber': phoneNumber,
+          'Password': password,
+          // Add other fields similarly
+        }),
+      );
 
-        if (response.statusCode == 200) {
-          // Handle successful account creation
+      if (response.statusCode == 200) {
+        // Assuming the API returns a JWT upon successful account creation
+        String? token = extractTokenFromCookie(response.headers['set-cookie']);
+        if (token.isNotEmpty) {
+          const storage = FlutterSecureStorage();
+          await storage.write(key: 'jwt_token', value: token);
+
+          // Navigate to home page
+        if (!mounted) return;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage(username: "John")),
+          );
+          showSnackBar('Account created successfully!');
         } else {
-          throw Exception('Failed to create account');
+          print('No token found in response');
+          // Show user feedback
         }
-      } catch (e) {
-        print('Caught error: $e');
+      } else if (response.statusCode == 400) {
+        showSnackBar('Invalid request. Please check your input.');
+      } else if (response.statusCode == 401) {
+        showSnackBar('Unauthorized. Please try again.');
+      } else if (response.statusCode == 500) {
+        showSnackBar('Server error. Please try again later.');
+      } else {
+        showSnackBar('Error: ${response.statusCode}');
       }
+    } catch (e) {
+      showSnackBar('An error occurred: $e');
     }
   }
+}
+
+String extractTokenFromCookie(String? cookie) {
+  if (cookie == null) return '';
+  return cookie
+      .split(';')
+      .firstWhere((item) => item.trim().startsWith('token='),
+          orElse: () => '')
+      .split('=')
+      .last;
+}
+
+void showSnackBar(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
