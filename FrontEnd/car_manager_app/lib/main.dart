@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'create_account_page.dart';
+import 'views/create_account_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'home_page.dart';
+import 'views/home_page.dart';
 
 void main() => runApp(const MyApp());
 

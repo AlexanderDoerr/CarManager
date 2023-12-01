@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'car_details_page.dart';
-import './models/car_model.dart';
+import '../models/car_model.dart';
 import 'add_car_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -119,8 +119,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Cars',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Invoices',
+            icon: Icon(Icons.schedule),
+            label: 'Scheduled Services',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline_sharp),
