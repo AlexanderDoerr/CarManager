@@ -216,6 +216,22 @@ const calculateNextServices = async (serviceType, serviceDate, serviceMileage) =
     };
 };
 
+/*********************************************************************************************************************/
+
+const getServiceTypes = async () => {
+    try {
+        const query = 'SELECT * FROM ServiceTypes';
+        const [rows] = await promiseConnection.execute(query);
+        console.log('Service types retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving service types: ' + error.message);
+    }
+};
+
+/*********************************************************************************************************************/
+
 module.exports = {
     createMaintenance,
     updateMaintenance,
@@ -230,5 +246,6 @@ module.exports = {
     getCompletedMaintenanceByCarId,
     getPendingMaintenanceByCarId,
     getUserCar,
-    getDailyDueMaintenanceReminders
+    getDailyDueMaintenanceReminders,
+    getServiceTypes
 };

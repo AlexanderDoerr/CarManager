@@ -9,8 +9,8 @@ const { connectConsumer, disconnectConsumer } = require('./kafka/kafkaConsumer.j
 const { dailyJob } = require('./controller/maintenanceController.js');
 
 const app = express();
-// const PORT = process.env.PORT;
-const PORT = 3004;
+const PORT = process.env.PORT;
+// const PORT = 3004;
 const SERVER_DELAY = process.env.SERVER_DELAY;
 
 app.use(express.json());

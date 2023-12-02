@@ -5,10 +5,10 @@ import 'dart:convert';
 import 'car_details_page.dart';
 import '../models/car_model.dart';
 import 'add_car_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
-
   const HomePage({Key? key, required this.username}) : super(key: key);
 
   @override
@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Car>> carsFuture;
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -113,6 +114,8 @@ class _HomePageState extends State<HomePage> {
       ),
       // BottomNavigationBar and other widgets...
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.car_rental),
@@ -131,6 +134,27 @@ class _HomePageState extends State<HomePage> {
         // TODO: Add navigation logic
       ),
     );
+  }
+
+    void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    switch (index) {
+      case 0:
+        // Already on HomePage
+        break;
+      // case 1:
+      //   // Navigate to Scheduled Services
+      //   Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (context) => ScheduledServicesPage()));
+      //   break;
+      case 2:
+        // Navigate to ProfilePage
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()));
+        break;
+    }
   }
 }
 

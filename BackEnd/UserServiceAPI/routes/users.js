@@ -11,10 +11,12 @@ router.post('/login', userController.loginUserController);
 //////////////////////////////////////////////////////////
 
 router.get('/', authenticateUser, userController.getAllUsers);
-router.get('/:id', authenticateUser,  userController.getUserController);
+router.get('/user', authenticateUser,  userController.getUserController);
 
 //////////////////////////////////////////////////////////
 
-router.patch('/:id', authenticateUser, userController.patchUserController);
+// router.patch('/:id', authenticateUser, userController.patchUserController);
+router.patch('/', authenticateUser, userController.patchUserController);
+
 
 module.exports = router;

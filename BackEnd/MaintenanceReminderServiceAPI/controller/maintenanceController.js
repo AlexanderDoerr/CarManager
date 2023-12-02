@@ -173,6 +173,23 @@ const getCompletedRemindersByCarId = async (req, res) => {
 
 /****************************************************************************************************/
 
+const getServiceTypesDB = async (req, res) => {
+    try {
+        const serviceTypes = await maintenanceModel.getServiceTypes();
+
+        if (serviceTypes.length === 0) {
+            return res.status(404).json({ message: 'No service types found' });
+        };
+
+        res.status(200).json(serviceTypes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the service types' });
+    }
+};
+
+/****************************************************************************************************/
+
 
 module.exports = {
     createMaintenanceRecord,
@@ -181,5 +198,6 @@ module.exports = {
     getAllRemindersByCarId,
     getPendingRemindersByCarId,
     getCompletedRemindersByCarId, 
+    getServiceTypesDB,
     dailyJob
 };

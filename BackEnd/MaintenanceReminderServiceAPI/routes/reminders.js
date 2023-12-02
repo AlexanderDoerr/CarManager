@@ -17,6 +17,9 @@ router.get('/all/:carId', authenticateUser, reminderController.getAllRemindersBy
 router.get('/pending/:carId', authenticateUser, reminderController.getPendingRemindersByCarId);
 router.get('/completed/:carId', authenticateUser, reminderController.getCompletedRemindersByCarId);
 
+//Need to test below route
+router.get('/types', authenticateUser, reminderController.getServiceTypesDB);
+
 
 // Handle Unhandled Routes
 router.use((req, res) => {

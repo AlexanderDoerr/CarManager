@@ -81,9 +81,21 @@ const loginUserController = async (req, res) => {
 };
 
 
+// const getUserController = async (req, res) => {
+//     try{
+//         const id = req.params.id;
+//         console.log(id);
+//         const result = await userData.getUser(id);
+//         res.status(200).json(result);
+//     } catch(error){
+//         console.log(error);
+//         res.status(500).json({message: 'An error occurred while retrieving the user'});
+//     }
+// }
+
 const getUserController = async (req, res) => {
     try{
-        const id = req.params.id;
+        const id = req.user.id;
         console.log(id);
         const result = await userData.getUser(id);
         res.status(200).json(result);
@@ -92,6 +104,7 @@ const getUserController = async (req, res) => {
         res.status(500).json({message: 'An error occurred while retrieving the user'});
     }
 }
+
 
 const getAllUsers = async (req, res) => {
     try{
@@ -105,9 +118,21 @@ const getAllUsers = async (req, res) => {
 
 /****************************************************************************************************/
 
+// const patchUserController = async (req, res) => { 
+//     try{
+//         const userId = req.params.id;
+//         const userUpdateData = req.body;
+//         const result = await userData.patchUser(userId, userUpdateData);
+//         res.status(200).json(result);
+//     } catch(error){
+//         console.log(error);
+//         res.status(500).json({message: 'An error occurred while updating the user'});
+//     }
+// };
+
 const patchUserController = async (req, res) => { 
     try{
-        const userId = req.params.id;
+        const userId = req.user.id;
         const userUpdateData = req.body;
         const result = await userData.patchUser(userId, userUpdateData);
         res.status(200).json(result);

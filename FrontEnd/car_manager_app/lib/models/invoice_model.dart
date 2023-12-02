@@ -49,11 +49,20 @@ class Invoice {
 }
 
 class Part {
-  final String name;
-  final double cost;
+  String name;
+  double cost;
 
   Part({required this.name, required this.cost});
 
+  // Converts a Part object to a Map object for JSON serialization.
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'cost': cost,
+    };
+  }
+
+  // Creates a Part object from a JSON map.
   factory Part.fromJson(Map<String, dynamic> json) {
     return Part(
       name: json['name'],
@@ -61,3 +70,4 @@ class Part {
     );
   }
 }
+
