@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../models/user_model.dart'; // Import your User model
 import 'package:flutter/services.dart';
 import 'home_page.dart';
+import 'scheduled_maintenance_page.dart';
 import 'package:car_manager_app/main.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -204,10 +205,10 @@ Future<void> _logout() async {
         Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => HomePage(username: firstNameController.text),));
         break;
-      // case 1:
+      case 1:
       //   // Navigate to Scheduled Services
-      //   Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (context) => ScheduledServicesPage()));
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const ScheduledMaintenancePage()));
       //   break;
       case 2:
         // Already on ProfilePage
@@ -228,33 +229,6 @@ Future<void> _logout() async {
     zipCodeController.dispose();
     super.dispose();
   }
-
-//   Widget buildReadOnlyView() {
-//   // Check if 'user' is null and show a loading indicator if it is
-//   if (user == null) {
-//     return const Center(child: CircularProgressIndicator());
-//   } else {
-//     // Build the user profile view once the 'user' data is available
-//     return Column(
-//       children: <Widget>[
-//         Text('Name: ${user!.firstName} ${user!.lastName}'), // Use '!' to assert that 'user' is not null
-//         Text('Date of Birth: ${user!.dateOfBirth}'),
-//         Text('Email: ${user!.email}'),
-//         Text('Phone Number: ${user!.phoneNumber}'),
-//         Text('Address: ${user!.address}'),
-//         Text('City: ${user!.city}'),
-//         Text('State: ${user!.state}'),
-//         Text('Zip Code: ${user!.zipCode}'),
-//         ElevatedButton(
-//           onPressed: () => setState(() => isEditMode = true),
-//           child: const Text('Edit'),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
 
 Widget buildReadOnlyView() {
   if (user == null) {
@@ -330,22 +304,27 @@ Widget _buildReadOnlyLine(String label, String value) {
         key: _formKey,
         child: SingleChildScrollView(
             child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            const SizedBox(height: 10),
             TextFormField(
               controller: firstNameController,
-              decoration: const InputDecoration(labelText: 'First Name'),
+              decoration: const InputDecoration(labelText: 'First Name', border: OutlineInputBorder()),
               validator: (value) =>
                   value!.isEmpty ? 'Please enter first name' : null,
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: lastNameController,
-              decoration: const InputDecoration(labelText: 'Last Name'),
+              decoration: const InputDecoration(labelText: 'Last Name', border: OutlineInputBorder()),
               validator: (value) =>
                   value!.isEmpty ? 'Please enter last name' : null,
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
               validator: (value) {
                 if (value == null || value.isEmpty || !value.contains('@')) {
                   return 'Please enter a valid email';
@@ -353,9 +332,10 @@ Widget _buildReadOnlyLine(String label, String value) {
                 return null;
               },
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: phoneNumberController,
-              decoration: const InputDecoration(labelText: 'Phone Number'),
+              decoration: const InputDecoration(labelText: 'Phone Number', border: OutlineInputBorder()),
               keyboardType: TextInputType.number, // Use number keyboard
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly, // Only allows digits
@@ -371,21 +351,25 @@ Widget _buildReadOnlyLine(String label, String value) {
                 return null;
               },
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: addressController,
-              decoration: const InputDecoration(labelText: 'Address'),
+              decoration: const InputDecoration(labelText: 'Address', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: cityController,
-              decoration: const InputDecoration(labelText: 'City'),
+              decoration: const InputDecoration(labelText: 'City', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: stateController,
-              decoration: const InputDecoration(labelText: 'State'),
+              decoration: const InputDecoration(labelText: 'State',   border: OutlineInputBorder()),
             ),
+            const SizedBox(height: 20.0),
             TextFormField(
               controller: zipCodeController,
-              decoration: const InputDecoration(labelText: 'Zip Code'),
+              decoration: const InputDecoration(labelText: 'Zip Code', border: OutlineInputBorder()),
             ),
             ElevatedButton(
               onPressed: () {

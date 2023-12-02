@@ -6,6 +6,7 @@ import 'car_details_page.dart';
 import '../models/car_model.dart';
 import 'add_car_page.dart';
 import 'profile_page.dart';
+import 'scheduled_maintenance_page.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -144,11 +145,11 @@ class _HomePageState extends State<HomePage> {
       case 0:
         // Already on HomePage
         break;
-      // case 1:
-      //   // Navigate to Scheduled Services
-      //   Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (context) => ScheduledServicesPage()));
-      //   break;
+      case 1:
+        // Navigate to Scheduled Services
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const ScheduledMaintenancePage()));
+        break;
       case 2:
         // Navigate to ProfilePage
         Navigator.pushReplacement(context,
