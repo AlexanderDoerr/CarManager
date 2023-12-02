@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../models/user_model.dart'; // Import your User model
 import 'package:flutter/services.dart';
 import 'home_page.dart';
+import 'package:car_manager_app/main.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -153,6 +154,18 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+Future<void> _logout() async {
+  const storage = FlutterSecureStorage();
+  await storage.delete(key: 'jwt_token'); // Clears the JWT token
+
+  // Navigate back to the LoginPage
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) => const LoginPage()),
+  );
+}
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -241,6 +254,8 @@ class _ProfilePageState extends State<ProfilePage> {
 //   }
 // }
 
+
+
 Widget buildReadOnlyView() {
   if (user == null) {
     return const Center(child: CircularProgressIndicator());
@@ -270,6 +285,17 @@ Widget buildReadOnlyView() {
             child: ElevatedButton(
               onPressed: () => setState(() => isEditMode = true),
               child: const Text('Edit'),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: ElevatedButton(
+              onPressed: _logout,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // background
+                foregroundColor: Colors.white, // foreground
+              ),
+              child: const Text('Logout'),
             ),
           ),
         ],
