@@ -120,6 +120,23 @@ const getAllRemindersByCarId = async (req, res) => {
     }
 };
 
+const getAllRemindersByUserId = async (req, res) => {
+    try {
+        const userId = req.user.id
+
+        const reminders = await maintenanceModel.getAllMaintenanceForUser(userId);
+        
+        if (reminders.length === 0) {
+            return res.status(404).json({ message: 'No maintenance reminders found' });
+        };
+
+        res.status(200).json(reminders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the maintenance reminders' });
+    }
+};
+
 const getPendingRemindersByCarId = async (req, res) => {
     try {
         const userId = req.user.id
@@ -196,6 +213,7 @@ module.exports = {
     createCarRecord,
     getDueMileage,
     getAllRemindersByCarId,
+    getAllRemindersByUserId,
     getPendingRemindersByCarId,
     getCompletedRemindersByCarId, 
     getServiceTypesDB,

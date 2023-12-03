@@ -6,6 +6,7 @@ import '../models/maintenance_model.dart';
 import 'profile_page.dart';
 import 'home_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'scheduled_details_page.dart';
 
 class ScheduledMaintenancePage extends StatefulWidget {
   const ScheduledMaintenancePage({Key? key}) : super(key: key);
@@ -16,85 +17,80 @@ class ScheduledMaintenancePage extends StatefulWidget {
 
 class _ScheduledMaintenancePageState extends State<ScheduledMaintenancePage> {
   late Future<List<Maintenance>> maintenanceFuture;
-  late Future<List<Car>> carsFuture;
   int _currentIndex = 1;
 
   @override
   void initState() {
     super.initState();
-    carsFuture = fetchUserCars();
+    maintenanceFuture = fetchScheduledMaintenance();
   }
 
-  Future<List<Car>> fetchUserCars() async {
-    const storage = FlutterSecureStorage();
-    String? jwtToken = await storage.read(key: 'jwt_token');
-    if (jwtToken == null) throw Exception('JWT Token not found');
+Future<Car> fetchUserCar(String carId) async {
+  const storage = FlutterSecureStorage();
+  String? jwtToken = await storage.read(key: 'jwt_token');
+  if (jwtToken == null) throw Exception('JWT Token not found');
 
-    var url = Uri.parse('http://10.0.2.2:5041/carapi/car/usercars/');
-    var response = await http.get(url, headers: {
+  var url = Uri.parse('http://10.0.2.2:5041/carapi/car/$carId');
+  var response = await http.get(url, headers: {
+    'Authorization': 'Bearer $jwtToken',
+    'Content-Type': 'application/json',
+  });
+
+  if (response.statusCode == 200) {
+    var json = jsonDecode(response.body);
+    Car car = Car.fromJson(json); // Assuming Car.fromJson can handle this JSON structure
+
+    return car;
+  } else {
+    throw Exception('Failed to load car');
+  }
+}
+
+
+Future<List<Maintenance>> fetchScheduledMaintenance() async {
+  const storage = FlutterSecureStorage();
+  String? jwtToken = await storage.read(key: 'jwt_token');
+  
+  if (jwtToken == null) {
+    throw Exception('JWT Token not found');
+  }
+
+  final url = Uri.parse('http://10.0.2.2:5041/reminderapi/user/all');
+  
+  try {
+    final response = await http.get(url, headers: {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json',
     });
 
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      List<Car> cars = (json as List).map((carJson) => Car.fromJson(carJson)).toList();
-
-      return cars;
-    } else {
-      throw Exception('Failed to load cars');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load maintenance: Server responded with status code ${response.statusCode}');
     }
-  }
 
-  Future<List<Maintenance>> fetchScheduledMaintenance(String carId) async {
-    var url = Uri.parse('http://10.0.2.2:5041/reminderapi/pending/$carId');
-    var response = await http.get(url, headers: {
-      'Authorization': 'Bearer [Your_JWT_Token]',
-      'Content-Type': 'application/json',
-    });
+    final List<dynamic> jsonResponse = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      List<Maintenance> maintenanceList = 
-          (json as List).map((maintenanceJson) => Maintenance.fromJson(maintenanceJson)).toList();
-
-      return maintenanceList;
-    } else {
-      throw Exception('Failed to load maintenance');
+    if (jsonResponse.isEmpty) {
+      throw Exception('No maintenance data available');
     }
-  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    switch (index) {
-      case 0: // Home
-                Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => HomePage(username: 'john'),));
-        break;
-      case 1: // Maintenance
-        
-        break;
-      case 2: // Profile
-          Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()));
-        break;
-    }
+    return jsonResponse.map((maintenanceJson) => Maintenance.fromJson(maintenanceJson)).toList();
+  } catch (e) {
+    // You can further handle specific exceptions if needed
+    throw Exception('An error occurred while fetching maintenance: ${e.toString()}');
   }
+}
 
-//TODO Change this to display the cars then use a inkwell to go to a new page and display the pending maintenance for the specific car
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scheduled Maintenance'),
+        title: const Text('Scheduled Maintenance'),
       ),
       body: FutureBuilder<List<Maintenance>>(
         future: maintenanceFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
@@ -104,12 +100,28 @@ class _ScheduledMaintenancePageState extends State<ScheduledMaintenancePage> {
                 var maintenance = snapshot.data![index];
                 return ListTile(
                   title: Text(maintenance.serviceType),
-                  subtitle: Text('Due Date: ${maintenance.dueDate}, Mileage: ${maintenance.dueMileage}'),
+                  subtitle: Text('Due Date: ${maintenance.getFormattedDueDate()}, Mileage: ${maintenance.dueMileage}'),
+                  onTap: () async {
+                    var localContext = context;
+                    try {
+                      Car car = await fetchUserCar(maintenance.carId);
+                      Navigator.push(
+                        localContext,
+                        MaterialPageRoute(
+                          builder: (localContext) => ScheduledDetailsPage(maintenance: maintenance, car: car),
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: ${e.toString()}')),
+                      );
+                    }
+                  },
                 );
               },
             );
           } else {
-            return Center(child: Text('No scheduled maintenance found'));
+            return const Center(child: Text('No scheduled maintenance found'));
           }
         },
       ),
@@ -118,7 +130,7 @@ class _ScheduledMaintenancePageState extends State<ScheduledMaintenancePage> {
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.car_rental),
             label: 'Cars',
           ),
           BottomNavigationBarItem(
@@ -132,5 +144,24 @@ class _ScheduledMaintenancePageState extends State<ScheduledMaintenancePage> {
         ],
       ),
     );
+  }
+
+    void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    switch (index) {
+      case 0: // Home
+                Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const HomePage(username: 'john'),));
+        break;
+      case 1: // Maintenance
+        
+        break;
+      case 2: // Profile
+          Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()));
+        break;
+    }
   }
 }

@@ -20,7 +20,7 @@ class InvoiceDetailsPage extends StatelessWidget {
             children: <Widget>[
               Text('Invoice Number: ${invoice.invoiceNumber}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              Text('Service Date: ${invoice.serviceDate.toLocal()}'.split(' ')[0], style: const TextStyle(fontSize: 16)),
+              Text('Service Date: ${invoice.getFormattedServiceDate()}', style: const TextStyle(fontSize: 16)),
               Text('Mechanic Name: ${invoice.mechanicName}', style: const TextStyle(fontSize: 16)),
               Text('Shop Name: ${invoice.shopName}', style: const TextStyle(fontSize: 16)),
               Text('Service Mileage: ${invoice.serviceMileage}', style: const TextStyle(fontSize: 16)),

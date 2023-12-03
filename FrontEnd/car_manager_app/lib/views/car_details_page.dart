@@ -127,7 +127,7 @@ Widget build(BuildContext context) {
                       Invoice invoice = snapshot.data![index];
                       return ListTile(
                         title: Text('Invoice Number: ${invoice.invoiceNumber}'),
-                        subtitle: Text('Service Date: ${invoice.serviceDate}'),
+                        subtitle: Text('Service Date: ${invoice.getFormattedServiceDate()}'),
                         // subtitle: Text('Service Date: ${invoice.serviceDate.toLocal()}'.split(' ')[0]),
                         onTap: () {
                           Navigator.push(

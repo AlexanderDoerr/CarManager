@@ -46,6 +46,11 @@ class Invoice {
       serviceDescription: json['ServiceDescription'],
     );
   }
+
+    String getFormattedServiceDate() {
+    // Format the date as YYYY-MM-DD
+    return "${serviceDate.year}-${serviceDate.month.toString().padLeft(2, '0')}-${serviceDate.day.toString().padLeft(2, '0')}";
+  }
 }
 
 class Part {

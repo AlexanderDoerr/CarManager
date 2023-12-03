@@ -25,4 +25,10 @@ class Maintenance {
       status: json['status'],
     );
   }
+
+    String getFormattedDueDate() {
+    DateTime parsedDate = DateTime.parse(dueDate);
+    // Format the date as YYYY-MM-DD
+    return "${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}";
+  }
 }

@@ -58,4 +58,10 @@ class User {
       // Other fields
     };
   }
+
+    String getFormattedBirthDate() {
+    DateTime parsedDate = DateTime.parse(dateOfBirth);
+    // Format the date as YYYY-MM-DD
+    return "${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}";
+  }
 }

@@ -55,6 +55,19 @@ const getUserCar = async (userId, carId) => {
     }
 };
 
+const getAllMaintenanceForUser = async (userId) => {
+    try {
+        const query = 'SELECT Reminder.*, Car.CarID, Car.UserID FROM Car JOIN Reminder ON Car.CarID = Reminder.CarID WHERE Car.UserID = ? AND Reminder.Status = \'pending\'';
+        const [rows] = await promiseConnection.execute(query, [userId]);
+        console.log('Maintenance reminders retrieved successfully.');
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error('An error occurred while retrieving maintenance reminders: ' + error.message);
+    }
+};
+
+
 
 const getAllMaintenanceByCarId = async (carId) => {
     try {
@@ -247,5 +260,6 @@ module.exports = {
     getPendingMaintenanceByCarId,
     getUserCar,
     getDailyDueMaintenanceReminders,
-    getServiceTypes
+    getServiceTypes,
+    getAllMaintenanceForUser
 };

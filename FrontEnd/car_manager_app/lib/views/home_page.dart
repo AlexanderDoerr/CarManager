@@ -123,11 +123,11 @@ class _HomePageState extends State<HomePage> {
             label: 'Cars',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
+            icon: Icon(Icons.build),
             label: 'Scheduled Services',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_sharp),
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
           // Add more items as needed

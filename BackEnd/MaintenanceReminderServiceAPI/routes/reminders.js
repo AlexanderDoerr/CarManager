@@ -14,6 +14,7 @@ router.get('/health', (req, res) => {
 
 
 router.get('/all/:carId', authenticateUser, reminderController.getAllRemindersByCarId);
+router.get('/user/all', authenticateUser, reminderController.getAllRemindersByUserId);
 router.get('/pending/:carId', authenticateUser, reminderController.getPendingRemindersByCarId);
 router.get('/completed/:carId', authenticateUser, reminderController.getCompletedRemindersByCarId);
 

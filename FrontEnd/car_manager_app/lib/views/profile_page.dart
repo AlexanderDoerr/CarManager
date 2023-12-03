@@ -71,17 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
         var jsonData = jsonDecode(response.body);
         print(jsonData);
         setState(() {
-          user = User.fromJson(jsonData); // Assuming you have a fromJson method
-
-          // Initialize controllers with user data
-          // firstNameController.text = user.firstName;
-          // lastNameController.text = user.lastName;
-          // emailController.text = user.email;
-          // phoneNumberController.text = user.phoneNumber;
-          // addressController.text = user.address;
-          // cityController.text = user.city;
-          // stateController.text = user.state;
-          // zipCodeController.text = user.zipCode;
+        user = User.fromJson(jsonData); // Assuming you have a fromJson method
         firstNameController.text = user?.firstName ?? '';
         lastNameController.text = user?.lastName ?? '';
         emailController.text = user?.email ?? '';
@@ -241,7 +231,7 @@ Widget buildReadOnlyView() {
         children: <Widget>[
           _buildReadOnlyLine('Name', '${user!.firstName} ${user!.lastName}'),
           const Divider(),
-          _buildReadOnlyLine('Date of Birth', user!.dateOfBirth),
+          _buildReadOnlyLine('Date of Birth', user!.getFormattedBirthDate()),
           const Divider(),
           _buildReadOnlyLine('Email', user!.email),
           const Divider(),
