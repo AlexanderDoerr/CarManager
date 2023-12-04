@@ -63,7 +63,7 @@ void _submitLogin() async {
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage(username: "John")),
+          MaterialPageRoute(builder: (context) => const HomePage(username: "Alexander")),
         );
         } else {
           showSnackBar('No token found in response.');

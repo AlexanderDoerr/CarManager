@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/invoice_model.dart';
+import 'package:intl/intl.dart';
 
 class AddInvoicePage extends StatefulWidget {
   final String carId;
@@ -12,8 +13,6 @@ class AddInvoicePage extends StatefulWidget {
   @override
   _AddInvoicePageState createState() => _AddInvoicePageState();
 }
-
-
 
 class _AddInvoicePageState extends State<AddInvoicePage> {
   final _formKey = GlobalKey<FormState>();
@@ -43,7 +42,6 @@ class _AddInvoicePageState extends State<AddInvoicePage> {
   final TextEditingController _serviceDescriptionController =
       TextEditingController();
   // Add fields for parts as needed
-  
 
   // Method to add a part
   void addPart() {
@@ -78,7 +76,7 @@ class _AddInvoicePageState extends State<AddInvoicePage> {
       }
     };
 
-        const storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     String? jwtToken = await storage.read(key: 'jwt_token');
     if (jwtToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -106,36 +104,35 @@ class _AddInvoicePageState extends State<AddInvoicePage> {
     }
   }
 
-Future<List<String>> fetchServiceTypes() async {
-  // Create an instance of FlutterSecureStorage
-  const storage = FlutterSecureStorage();
+  Future<List<String>> fetchServiceTypes() async {
+    // Create an instance of FlutterSecureStorage
+    const storage = FlutterSecureStorage();
 
-  // Read the JWT token from secure storage
-  String? jwtToken = await storage.read(key: 'jwt_token');
-  if (jwtToken == null) {
-    throw Exception('JWT Token not found');
+    // Read the JWT token from secure storage
+    String? jwtToken = await storage.read(key: 'jwt_token');
+    if (jwtToken == null) {
+      throw Exception('JWT Token not found');
+    }
+
+    // Make the HTTP request using the JWT token
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:5041/reminderapi/types'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    // Process the response
+    if (response.statusCode == 200) {
+      List<dynamic> typesJson = jsonDecode(response.body);
+      List<String> serviceTypes =
+          typesJson.map((json) => json['serviceType'] as String).toList();
+      return serviceTypes;
+    } else {
+      throw Exception('Failed to load service types');
+    }
   }
-
-  // Make the HTTP request using the JWT token
-  final response = await http.get(
-    Uri.parse('http://10.0.2.2:5041/reminderapi/types'),
-    headers: {
-      'Authorization': 'Bearer $jwtToken',
-      'Content-Type': 'application/json',
-    },
-  );
-
-  // Process the response
-  if (response.statusCode == 200) {
-    List<dynamic> typesJson = jsonDecode(response.body);
-    List<String> serviceTypes = typesJson.map((json) => json['serviceType'] as String).toList();
-    return serviceTypes;
-  } else {
-    throw Exception('Failed to load service types');
-  }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +158,7 @@ Future<List<String>> fetchServiceTypes() async {
               ),
               ListTile(
                 title: const Text('Service Date'),
-                subtitle: Text(serviceDate.toIso8601String()),
+                subtitle: Text(serviceDate.toString()),
                 onTap: () async {
                   final newDate = await showDatePicker(
                     context: context,
@@ -247,8 +244,11 @@ Future<List<String>> fetchServiceTypes() async {
                   } else {
                     // Dropdown menu
                     return DropdownButtonFormField<String>(
-                      value: _serviceTypeController.text.isNotEmpty ? _serviceTypeController.text : null,
-                      decoration: const InputDecoration(labelText: 'Service Type'),
+                      value: _serviceTypeController.text.isNotEmpty
+                          ? _serviceTypeController.text
+                          : null,
+                      decoration:
+                          const InputDecoration(labelText: 'Service Type'),
                       items: snapshot.data!
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(

@@ -36,10 +36,10 @@ class User {
       email: json['Email'],
       phoneNumber: json['PhoneNumber'].toString(),
       password: json['Password'],
-      address: json['Address'],
-      city: json['City'],
-      state: json['State'],
-      zipCode: json['ZipCode'].toString(),
+      address: json['Address'] as String? ?? '',
+      city: json['City'] as String? ?? '',
+      state: json['State'] as String? ?? '',
+      zipCode: json['ZipCode'] != null ? json['ZipCode'].toString() : '',
       // Initialize other fields
     );
   }
